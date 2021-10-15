@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "358694686398",
+    "project_id": "yearofcheers",
+    "storage_bucket": "yearofcheers.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358694686398:android:60241a8bb3b4a3280258ef",
+        "android_client_info": {
+          "package_name": "com.yearofcheers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "358694686398-96jii4pacpmdpdi8beab7m4grlf6t4di.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqHWyJY-lQMBMrRW_wVf7owtsWgabIMyk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "358694686398-96jii4pacpmdpdi8beab7m4grlf6t4di.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
