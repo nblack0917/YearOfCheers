@@ -8,6 +8,7 @@ export const CheersProvider = ({ children }) => {
     name: "",
     date: null,
     image: null,
+    location: { latitude: 30.456954, longitude: -97.635594 },
   });
 
   const value = {

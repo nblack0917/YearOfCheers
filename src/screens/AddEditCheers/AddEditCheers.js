@@ -1,8 +1,9 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import MapView, { Marker, ProviderPropType } from "react-native-maps";
 import { Portal, Modal } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import {
   TextInput,
@@ -31,8 +32,13 @@ export const AddEditCheers = ({ navigation }) => {
     longitudeDelta: 0.0421,
   });
   const [visible, setVisible] = useState(false);
+  const [markers, setMarkers] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   const { cheers, setCheers } = useContext(CheersContext);
+
+  const mapView = useRef();
+  const markerView = useRef();
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -118,12 +124,56 @@ export const AddEditCheers = ({ navigation }) => {
     }
   };
 
+  const getCurrentLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      setErrorMsg("Permission to access location was denied");
+      return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    console.log(location);
+    animateMap({
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    });
+    setMarkers({
+      marker: {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      },
+    });
+    // setMarkerVisible(true);
+  };
+
+  const animateMap = ({ latitude, longitude }, index) => {
+    console.log("latlng", latitude, longitude);
+    mapView.current.animateToRegion(
+      {
+        // Takes a region object as parameter
+        longitude,
+        latitude,
+        latitudeDelta: 0.0363,
+        longitudeDelta: 0.0363,
+      },
+      500
+    );
+    // console.log("index", index)
+    // let selectedMarker = markerView.current;
+    // selectedMarker.showCallout();
+    // console.log("markerView", selectedMarker)
+  };
+
   useEffect(() => {
     if (!ready) {
       setCheers({ ...cheers, date: new Date() });
       setReady(true);
     }
   }, [ready]);
+
+  useEffect(() => {
+    console.log(markers);
+  }, [markers]);
 
   return (
     <View style={styles.container}>
@@ -173,16 +223,32 @@ export const AddEditCheers = ({ navigation }) => {
             )}
             <Text style={styles.subText}>Location:</Text>
             <MapView
+              scrollEnabled={true}
+              zoomEnabled={true}
+              // showsMyLocationButton={true}
               style={{ width: "80%", height: 325 }}
-              region={region}
+              initialRegion={region}
               onRegionChange={(e) => onRegionChange(e)}
+              onPress={(e) => {
+                setMarkers({ marker: e.nativeEvent.coordinate });
+                animateMap(e.nativeEvent.coordinate);
+              }}
+              ref={mapView}
             >
-              <Marker
-                title="This is a title"
-                description="This is a description"
-                coordinate={{ latitude: 30.456954, longitude: -97.635594 }}
-              />
+              {markers && (
+                <Marker
+                  title="This is a title"
+                  description="This is a description"
+                  coordinate={markers.marker}
+                  ref={markerView}
+                />
+              )}
             </MapView>
+            <Button
+              color="#116466"
+              title="Current location"
+              onPress={() => getCurrentLocation()}
+            />
             <Text style={styles.subText}>Photo:</Text>
             {cheers.image !== null && (
               <View style={styles.picContainer}>
