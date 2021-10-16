@@ -5,6 +5,7 @@ import AppLoading from "expo-app-loading";
 import * as firebase from "firebase";
 import "firebase/firestore";
 
+import { CheersContext } from "../../context/CheersContext";
 // import { styles } from "../../utils/style";
 
 import {

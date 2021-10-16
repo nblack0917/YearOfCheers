@@ -13,6 +13,8 @@ import { Calendar } from "./screens/Calendar/Calendar";
 import { CheersMap } from "./screens/CheersMap/CheersMap";
 import { Loading } from "./screens/Loading/Loading";
 
+import { CheersProvider } from "./context/CheersContext";
+
 const Drawer = createDrawerNavigator();
 
 const paperTheme = {
@@ -37,32 +39,34 @@ export default function App() {
     return <Loading />;
   } else {
     return (
-      <PaperProvider theme={paperTheme}>
-        <NavigationContainer>
-          <Drawer.Navigator
-            initialRouteName="Home"
-            screenOptions={{
-              drawerActiveBackgroundColor: "#116466",
-              drawerContentContainerStyle: { backgroundColor: "#333" },
-              drawerActiveTintColor: "#f4f4f4",
-              drawerInactiveTintColor: "#D1E8E2",
-              drawerInactiveBackgroundColor: "#414A49",
-              drawerStyle: {
-                backgroundColor: "#2c3531",
-                width: "80%",
-              },
-              headerStyle: { backgroundColor: "#414A49" },
-              headerTitleStyle: { color: "#f4f4f4" },
-              defaultStatus: "open",
-            }}
-          >
-            <Drawer.Screen name="Home" component={Home} />
-            <Drawer.Screen name="Cheers" component={AddEditCheers} />
-            <Drawer.Screen name="Calendar" component={Calendar} />
-            <Drawer.Screen name="CheersMap" component={CheersMap} />
-          </Drawer.Navigator>
-        </NavigationContainer>
-      </PaperProvider>
+      <CheersProvider>
+        <PaperProvider theme={paperTheme}>
+          <NavigationContainer>
+            <Drawer.Navigator
+              initialRouteName="Home"
+              screenOptions={{
+                drawerActiveBackgroundColor: "#116466",
+                drawerContentContainerStyle: { backgroundColor: "#333" },
+                drawerActiveTintColor: "#f4f4f4",
+                drawerInactiveTintColor: "#D1E8E2",
+                drawerInactiveBackgroundColor: "#414A49",
+                drawerStyle: {
+                  backgroundColor: "#2c3531",
+                  width: "80%",
+                },
+                headerStyle: { backgroundColor: "#414A49" },
+                headerTitleStyle: { color: "#f4f4f4" },
+                defaultStatus: "open",
+              }}
+            >
+              <Drawer.Screen name="Home" component={Home} />
+              <Drawer.Screen name="Cheers" component={AddEditCheers} />
+              <Drawer.Screen name="Calendar" component={Calendar} />
+              <Drawer.Screen name="CheersMap" component={CheersMap} />
+            </Drawer.Navigator>
+          </NavigationContainer>
+        </PaperProvider>
+      </CheersProvider>
     );
   }
 }

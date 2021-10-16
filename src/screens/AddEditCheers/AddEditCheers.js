@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import MapView, { Marker, ProviderPropType } from "react-native-maps";
 import { Portal, Modal } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
@@ -14,15 +14,16 @@ import {
   ImageBackground,
   ScrollView,
 } from "react-native";
-// import { useEffect } from "react/cjs/react.development";
+
+import { CheersContext } from "../../context/CheersContext";
 
 export const AddEditCheers = ({ navigation }) => {
   const [ready, setReady] = useState(false);
-  const [name, setName] = useState("");
-  const [date, setDate] = useState();
+  // const [name, setName] = useState("");
+  // const [date, setDate] = useState(null);
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-  const [image, setImage] = useState(null);
+  // const [image, setImage] = useState(null);
   const [region, setRegion] = useState({
     latitude: 30.456954,
     longitude: -97.635594,
@@ -31,13 +32,15 @@ export const AddEditCheers = ({ navigation }) => {
   });
   const [visible, setVisible] = useState(false);
 
+  const { cheers, setCheers } = useContext(CheersContext);
+
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === "ios");
-    setDate(currentDate);
+    setCheers({ ...cheers, date: currentDate });
     if (mode === "date") {
       setMode("time");
       setShow(true);
@@ -82,12 +85,12 @@ export const AddEditCheers = ({ navigation }) => {
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
           allowsEditing: true,
-          aspect: [4, 3],
+          // aspect: [4, 3],
           quality: 1,
         });
         console.log(result);
         if (!result.cancelled) {
-          Image(result.uri);
+          setCheers({ ...cheers, image: result.uri });
           setVisible(false);
         }
       }
@@ -108,7 +111,7 @@ export const AddEditCheers = ({ navigation }) => {
         });
         console.log(result);
         if (!result.cancelled) {
-          setImage(result.uri);
+          setCheers({ ...cheers, image: result.uri });
           setVisible(false);
         }
       }
@@ -117,7 +120,7 @@ export const AddEditCheers = ({ navigation }) => {
 
   useEffect(() => {
     if (!ready) {
-      setDate(new Date());
+      setCheers({ ...cheers, date: new Date() });
       setReady(true);
     }
   }, [ready]);
@@ -128,7 +131,7 @@ export const AddEditCheers = ({ navigation }) => {
         <ImageBackground
           source={require("../../images/WineGlasses_dark.jpg")}
           resizeMode="cover"
-          style={styles.image}
+          style={styles.imageContainer}
         >
           <View style={styles.wrapper}>
             <Text style={styles.mainText}>Add/Edit Cheers Page</Text>
@@ -136,17 +139,19 @@ export const AddEditCheers = ({ navigation }) => {
             <TextInput
               style={styles.input}
               onChangeText={(e) => {
-                setName(e);
+                setCheers({ ...cheers, name: e });
                 // console.log(e);
               }}
-              value={name}
+              value={cheers.name}
               placeholder="Cheers Name"
             />
             <Text style={styles.subText}>Date:</Text>
             {ready && (
               <View style={styles.dateWrapper}>
-                <Text style={styles.dateText}>{date.toDateString()}</Text>
-                <Text style={styles.dateText}>{formatAMPM(date)}</Text>
+                <Text style={styles.dateText}>
+                  {cheers.date.toDateString()}
+                </Text>
+                <Text style={styles.dateText}>{formatAMPM(cheers.date)}</Text>
               </View>
             )}
             <View>
@@ -159,7 +164,7 @@ export const AddEditCheers = ({ navigation }) => {
             {show && (
               <DateTimePicker
                 testID="dateTimePicker"
-                value={date}
+                value={cheers.date}
                 mode={mode}
                 is24Hour={false}
                 display="default"
@@ -179,11 +184,11 @@ export const AddEditCheers = ({ navigation }) => {
               />
             </MapView>
             <Text style={styles.subText}>Photo:</Text>
-            {image !== null && (
+            {cheers.image !== null && (
               <View style={styles.picContainer}>
                 <Image
                   style={styles.pic}
-                  source={{ uri: image !== null && image }}
+                  source={{ uri: cheers.image !== null && cheers.image }}
                 />
               </View>
             )}
@@ -192,6 +197,7 @@ export const AddEditCheers = ({ navigation }) => {
               title="Upload an Image"
               onPress={() => showModal()}
             />
+            <View style={{ height: 100 }} />
 
             <Portal>
               <Modal
@@ -255,11 +261,11 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     // height: 40,
   },
-  image: {
+  imageContainer: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     width: "100%",
-    height: "100%",
+    // height: "100%",
   },
   button: {
     maxWidth: 100,
@@ -312,8 +318,9 @@ const styles = StyleSheet.create({
   },
   picContainer: {
     width: 300,
-    height: 300,
-    borderWidth: 1,
+    height: "auto",
+    borderWidth: 2,
+    marginBottom: 20,
   },
   pic: {
     width: 298,
