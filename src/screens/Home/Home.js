@@ -16,30 +16,30 @@ import {
 // import { set } from "react-native-reanimated";
 
 export const Home = ({ navigation }) => {
-  const [cheers, setCheers] = useState("");
+  // const [cheers, setCheers] = useState("");
 
-  const getCheers = () => {
-    try {
-      const cheersRef = firebase.firestore().collection("cheers");
-      cheersRef.get().then((querySnapshot) => {
-        // setCheers(querySnapshot.size.toString());
-        querySnapshot.forEach((doc) => {
-          setCheers(doc.data().name);
-        });
-      });
-    } catch (error) {
-      console.log("Error with firestore: ", error);
-    }
-  };
+  // const getCheers = () => {
+  //   try {
+  //     const cheersRef = firebase.firestore().collection("cheers");
+  //     cheersRef.get().then((querySnapshot) => {
+  //       // setCheers(querySnapshot.size.toString());
+  //       querySnapshot.forEach((doc) => {
+  //         setCheers(doc.data().name);
+  //       });
+  //     });
+  //   } catch (error) {
+  //     console.log("Error with firestore: ", error);
+  //   }
+  // };
 
   let [fontsLoaded, error] = useFonts({
     Merienda_400Regular,
     Merienda_700Bold,
   });
 
-  useEffect(() => {
-    getCheers();
-  }, []);
+  // useEffect(() => {
+  //   getCheers();
+  // }, []);
 
   if (!fontsLoaded) {
     return <AppLoading />;
@@ -56,7 +56,7 @@ export const Home = ({ navigation }) => {
           <Text style={styles.mainText}>Year of Cheers</Text>
           <Button
             style={styles.button}
-            onPress={() => navigation.navigate("Cheers")}
+            onPress={() => navigation.navigate("New Cheers")}
             color="#116466"
             title="Add new Cheers"
           />

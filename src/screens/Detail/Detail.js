@@ -9,6 +9,8 @@ import * as Location from "expo-location";
 import * as firebase from "firebase";
 import "firebase/firestore";
 
+const defaultImage = require("../../images/defaultCheers.jpg");
+
 import DateTimePicker from "@react-native-community/datetimepicker";
 import {
   TextInput,
@@ -28,14 +30,14 @@ import { Loading } from "../Loading/Loading";
 
 import { CheersContext } from "../../context/CheersContext";
 
-export const AddEditCheers = ({ navigation }) => {
+export const CheersDetail = ({ navigation, cheer }) => {
   const [ready, setReady] = useState(false);
   const [uploading, setUploading] = useState(false);
   // const [name, setName] = useState("");
   // const [date, setDate] = useState(null);
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-  const [image, setImage] = useState(null);
+  // const [image, setImage] = useState(null);
   const [region, setRegion] = useState({
     latitude: 30.456954,
     longitude: -97.635594,
@@ -46,8 +48,9 @@ export const AddEditCheers = ({ navigation }) => {
   const [imageVisible, setImageVisible] = useState(false);
   const [markers, setMarkers] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [image, setImage] = useState(null);
 
-  const { cheers, setCheers, loading, setLoading, resetCheers } =
+  const { cheers, setCheers, loading, setLoading, resetCheers, cheerDetail } =
     useContext(CheersContext);
 
   const showModal = () => setVisible(true);
@@ -205,10 +208,7 @@ export const AddEditCheers = ({ navigation }) => {
       // fileRef
       //   .put(filePath)
       .then((snapshot) =>
-        ref.getDownloadURL().then((url) => {
-          setCheers({ ...cheers, image: url });
-          setImage([{ uri: url }]);
-        })
+        ref.getDownloadURL().then((url) => setCheers({ ...cheers, image: url }))
       )
       .then(() => {
         console.log("photo updated!");
@@ -260,12 +260,26 @@ export const AddEditCheers = ({ navigation }) => {
       setCheers({ ...cheers, date: new Date() });
       setReady(true);
     }
+    console.log(cheerDetail);
   }, [ready]);
 
-  // useEffect(() => {
-  //   console.log(uuid.v4());
-  // }, []);
+  useEffect(() => {
+    setRegion({
+      latitude: cheerDetail.data().location.latitude,
+      longitude: cheerDetail.data().location.longitude,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    });
+    if (cheerDetail.data().image) {
+      setImage([{ uri: cheerDetail.data().image }]);
+    } else {
+      setImage([defaultImage]);
+    }
+  }, []);
 
+  //   if (!cheersDetail) {
+  //     return <Loading />;
+  //   } else {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollContainer}>
@@ -275,9 +289,35 @@ export const AddEditCheers = ({ navigation }) => {
           style={styles.imageContainer}
         >
           <View style={styles.wrapper}>
-            <Text style={styles.mainText}>Add/Edit Cheers Page</Text>
-            <Text style={styles.subText}>Name:</Text>
-            <TextInput
+            {cheerDetail.data().image ? (
+              <TouchableOpacity
+                style={styles.picDetailContainer}
+                onPress={() => setImageVisible(true)}
+              >
+                <Image
+                  style={styles.pic}
+                  source={{
+                    uri: cheerDetail.data().image && cheerDetail.data().image,
+                  }}
+                />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.picDetailContainer}
+                onPress={() => setImageVisible(true)}
+              >
+                <Image style={styles.pic} source={defaultImage} />
+              </TouchableOpacity>
+            )}
+            {/* <Button
+              color="#116466"
+              title={cheers.image ? "Replace Image" : "Add an Image"}
+              onPress={() => showModal()}
+            />
+            <Text style={styles.mainText}>Cheers Detail Page</Text>
+            <Text style={styles.subText}>Name:</Text> */}
+            <Text style={styles.mainText}>{cheerDetail.data().name}</Text>
+            {/* <TextInput
               style={styles.input}
               onChangeText={(e) => {
                 setCheers({ ...cheers, name: e });
@@ -285,22 +325,24 @@ export const AddEditCheers = ({ navigation }) => {
               }}
               value={cheers.name}
               placeholder="Cheers Name"
-            />
-            <Text style={styles.subText}>Date:</Text>
+            /> */}
+            {/* <Text style={styles.subText}>Date:</Text> */}
             {ready && (
               <View style={styles.dateWrapper}>
                 <Text style={styles.dateText}>
-                  {cheers.date.toDateString()}
+                  {cheerDetail.data().date.toDate().toDateString()}
                 </Text>
-                <Text style={styles.dateText}>{formatAMPM(cheers.date)}</Text>
+                <Text style={styles.dateText}>
+                  {formatAMPM(cheerDetail.data().date.toDate())}
+                </Text>
               </View>
             )}
             <View>
-              <Button
+              {/* <Button
                 onPress={showDatepicker}
                 color="#116466"
                 title="Change Date/Time"
-              />
+              /> */}
             </View>
             {show && (
               <DateTimePicker
@@ -315,49 +357,36 @@ export const AddEditCheers = ({ navigation }) => {
             <Text style={styles.subText}>Location:</Text>
             <MapView
               scrollEnabled={true}
+              rotateEnabled={false}
               zoomEnabled={true}
               // showsMyLocationButton={true}
-              style={{ width: "80%", height: 325, marginBottom: 10 }}
+              style={{ width: "100%", height: 325, marginBottom: 10 }}
               initialRegion={region}
               onRegionChange={(e) => onRegionChange(e)}
-              onPress={(e) => {
-                setMarkers({ marker: e.nativeEvent.coordinate });
-                setCheers({ ...cheers, location: e.nativeEvent.coordinate });
-                animateMap(e.nativeEvent.coordinate);
-              }}
+              //   onPress={(e) => {
+              //     setMarkers({ marker: e.nativeEvent.coordinate });
+              //     setCheers({ ...cheers, location: e.nativeEvent.coordinate });
+              //     animateMap(e.nativeEvent.coordinate);
+              //   }}
               ref={mapView}
             >
-              {markers && (
-                <Marker
-                  title="Cheers"
-                  description="Clink"
-                  coordinate={markers.marker}
-                  ref={markerView}
-                />
-              )}
+              <Marker
+                title="Cheers"
+                description="Clink"
+                coordinate={{
+                  latitude: cheerDetail.data().location.latitude,
+                  longitude: cheerDetail.data().location.longitude,
+                }}
+                ref={markerView}
+              />
             </MapView>
-            <Button
+            {/* <Button
               color="#116466"
               title="Use Current location"
               onPress={() => getCurrentLocation()}
-            />
+            /> */}
             <Text style={styles.subText}>Photo: (optional)</Text>
-            {cheers.image !== null && (
-              <TouchableOpacity
-                style={styles.picContainer}
-                onPress={() => setImageVisible(true)}
-              >
-                <Image
-                  style={styles.pic}
-                  source={{ uri: cheers.image !== null && cheers.image }}
-                />
-              </TouchableOpacity>
-            )}
-            <Button
-              color="#116466"
-              title={cheers.image ? "Replace Image" : "Add an Image"}
-              onPress={() => showModal()}
-            />
+
             <View style={{ height: 100 }} />
             <TouchableOpacity
               style={styles.saveButton}
@@ -427,6 +456,7 @@ export const AddEditCheers = ({ navigation }) => {
       </ScrollView>
     </View>
   );
+  //   }
 };
 
 const styles = StyleSheet.create({
@@ -446,7 +476,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "#2c3531",
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingTop: 15,
+    // paddingTop: 15,
   },
   dateWrapper: {
     // flex: 3,
@@ -511,15 +541,15 @@ const styles = StyleSheet.create({
     // width: 200,
     backgroundColor: "#414A49",
   },
-  picContainer: {
-    width: 300,
+  picDetailContainer: {
+    width: "100%",
     height: "auto",
-    borderWidth: 2,
+    // borderWidth: 2,
     marginBottom: 20,
   },
   pic: {
-    width: 298,
-    height: 298,
+    width: "100%",
+    height: 300,
   },
   saveButton: {
     // padding: 5,

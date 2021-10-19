@@ -81,7 +81,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.asList(
         new MainReactPackage(),
         new ReactNativeFirebaseAppPackage(),
-  };
+  }
 
   @Override
   public ReactNativeHost getReactNativeHost() {

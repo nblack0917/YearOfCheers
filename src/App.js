@@ -3,19 +3,23 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View, Button, ImageBackground } from "react-native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import * as firebase from "firebase";
 import apiKeys from "./firebase";
 
 import { Home } from "./screens/Home/Home";
 import { AddEditCheers } from "./screens/AddEditCheers/AddEditCheers";
-import { Calendar } from "./screens/Calendar/Calendar";
+import { CheersCalendar } from "./screens/Calendar/Calendar";
 import { CheersMap } from "./screens/CheersMap/CheersMap";
+import { CheersDetail } from "./screens/Detail/Detail";
 import { Loading } from "./screens/Loading/Loading";
 
 import { CheersProvider } from "./context/CheersContext";
 
 const Drawer = createDrawerNavigator();
+
+const Stack = createStackNavigator();
 
 const paperTheme = {
   ...DefaultTheme,
@@ -26,6 +30,34 @@ const paperTheme = {
     primary: "black",
     accent: "gray",
   },
+};
+
+const HomePage = () => {
+  return (
+    <Drawer.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        drawerActiveBackgroundColor: "#116466",
+        drawerContentContainerStyle: { backgroundColor: "#333" },
+        drawerActiveTintColor: "#f4f4f4",
+        drawerInactiveTintColor: "#D1E8E2",
+        drawerInactiveBackgroundColor: "#414A49",
+        drawerStyle: {
+          backgroundColor: "#2c3531",
+          width: "80%",
+        },
+        headerStyle: { backgroundColor: "#414A49" },
+        headerTitleStyle: { color: "#f4f4f4" },
+        defaultStatus: "open",
+      }}
+    >
+      <Drawer.Screen name="Home" component={Home} />
+      <Drawer.Screen name="New Cheers" component={AddEditCheers} />
+      <Drawer.Screen name="Calendar" component={CheersCalendar} />
+      <Drawer.Screen name="Cheers Map" component={CheersMap} />
+      {/* <Drawer.Screen name="Cheers Detail" component={CheersDetail} /> */}
+    </Drawer.Navigator>
+  );
 };
 
 export default function App() {
@@ -42,28 +74,15 @@ export default function App() {
       <CheersProvider>
         <PaperProvider theme={paperTheme}>
           <NavigationContainer>
-            <Drawer.Navigator
-              initialRouteName="Home"
-              screenOptions={{
-                drawerActiveBackgroundColor: "#116466",
-                drawerContentContainerStyle: { backgroundColor: "#333" },
-                drawerActiveTintColor: "#f4f4f4",
-                drawerInactiveTintColor: "#D1E8E2",
-                drawerInactiveBackgroundColor: "#414A49",
-                drawerStyle: {
-                  backgroundColor: "#2c3531",
-                  width: "80%",
-                },
-                headerStyle: { backgroundColor: "#414A49" },
-                headerTitleStyle: { color: "#f4f4f4" },
-                defaultStatus: "open",
-              }}
-            >
-              <Drawer.Screen name="Home" component={Home} />
-              <Drawer.Screen name="Cheers" component={AddEditCheers} />
-              <Drawer.Screen name="Calendar" component={Calendar} />
-              <Drawer.Screen name="CheersMap" component={CheersMap} />
-            </Drawer.Navigator>
+            <Stack.Navigator>
+              <Stack.Screen
+                name="HomePage"
+                component={HomePage}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen name="Cheers Detail" component={CheersDetail} />
+              {/* <Stack.Screen name="Settings" component={Settings} /> */}
+            </Stack.Navigator>
           </NavigationContainer>
         </PaperProvider>
       </CheersProvider>
