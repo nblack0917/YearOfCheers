@@ -12,7 +12,13 @@ const defaultCheers = {
 };
 
 export const CheersProvider = ({ children }) => {
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [user, setUser] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [ready, setReady] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [editId, setEditId] = useState(null);
   const [cheerDetail, setCheerDetail] = useState(null);
   const [cheers, setCheers] = useState({
     name: "",
@@ -29,11 +35,23 @@ export const CheersProvider = ({ children }) => {
   const value = {
     loading,
     setLoading,
+    ready,
+    setReady,
     cheers,
     setCheers,
     resetCheers,
     cheerDetail,
     setCheerDetail,
+    edit,
+    setEdit,
+    editId,
+    setEditId,
+    isSignedIn,
+    setIsSignedIn,
+    isGuest,
+    setIsGuest,
+    user,
+    setUser,
   };
 
   return (

@@ -31,7 +31,7 @@ import { Loading } from "../Loading/Loading";
 import { CheersContext } from "../../context/CheersContext";
 
 export const CheersDetail = ({ navigation, cheer }) => {
-  const [ready, setReady] = useState(false);
+  //   const [ready, setReady] = useState(false);
   const [uploading, setUploading] = useState(false);
   // const [name, setName] = useState("");
   // const [date, setDate] = useState(null);
@@ -50,8 +50,20 @@ export const CheersDetail = ({ navigation, cheer }) => {
   const [errorMsg, setErrorMsg] = useState(null);
   const [image, setImage] = useState(null);
 
-  const { cheers, setCheers, loading, setLoading, resetCheers, cheerDetail } =
-    useContext(CheersContext);
+  const {
+    cheers,
+    setCheers,
+    loading,
+    setLoading,
+    resetCheers,
+    cheerDetail,
+    ready,
+    setReady,
+    edit,
+    setEdit,
+    editId,
+    setEditId,
+  } = useContext(CheersContext);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -255,6 +267,21 @@ export const CheersDetail = ({ navigation, cheer }) => {
     }
   };
 
+  const handleEditCheers = () => {
+    setReady(true);
+    setEdit(true);
+    setEditId(cheerDetail.id);
+    setCheers({
+      name: cheerDetail.data().name,
+      date: cheerDetail.data().date.toDate(),
+      drinkOne: null,
+      drinkTwo: null,
+      image: cheerDetail.data().image ? cheerDetail.data().image : "",
+      location: cheerDetail.data().location,
+    });
+    navigation.navigate("New Cheers");
+  };
+
   useEffect(() => {
     if (!ready) {
       setCheers({ ...cheers, date: new Date() });
@@ -267,8 +294,8 @@ export const CheersDetail = ({ navigation, cheer }) => {
     setRegion({
       latitude: cheerDetail.data().location.latitude,
       longitude: cheerDetail.data().location.longitude,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
     });
     if (cheerDetail.data().image) {
       setImage([{ uri: cheerDetail.data().image }]);
@@ -354,13 +381,18 @@ export const CheersDetail = ({ navigation, cheer }) => {
                 onChange={onChange}
               />
             )}
-            <Text style={styles.subText}>Location:</Text>
+            {/* <Text style={styles.subText}>Location:</Text> */}
             <MapView
-              scrollEnabled={true}
+              scrollEnabled={false}
               rotateEnabled={false}
-              zoomEnabled={true}
+              zoomEnabled={false}
               // showsMyLocationButton={true}
-              style={{ width: "100%", height: 325, marginBottom: 10 }}
+              style={{
+                width: "100%",
+                height: 200,
+                marginBottom: 10,
+                marginTop: 10,
+              }}
               initialRegion={region}
               onRegionChange={(e) => onRegionChange(e)}
               //   onPress={(e) => {
@@ -385,14 +417,14 @@ export const CheersDetail = ({ navigation, cheer }) => {
               title="Use Current location"
               onPress={() => getCurrentLocation()}
             /> */}
-            <Text style={styles.subText}>Photo: (optional)</Text>
+            {/* <Text style={styles.subText}>Photo: (optional)</Text> */}
 
             <View style={{ height: 100 }} />
             <TouchableOpacity
               style={styles.saveButton}
-              onPress={() => uploadCheers()}
+              onPress={() => handleEditCheers()}
             >
-              <Text style={styles.buttonText}>Save Cheers</Text>
+              <Text style={styles.buttonText}>Edit This Cheers</Text>
             </TouchableOpacity>
             {/* <Button
               style={{ padding: 15 }}

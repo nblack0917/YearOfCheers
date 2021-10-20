@@ -41,6 +41,7 @@ export const CheersMap = ({ navigation }) => {
     resetCheers,
     cheerDetail,
     setCheerDetail,
+    edit,
   } = useContext(CheersContext);
 
   const mapView = useRef();
@@ -104,6 +105,7 @@ export const CheersMap = ({ navigation }) => {
           (a, b) => a.data().date.toDate() - b.data().date.toDate()
         );
         setMarkers(cheersArray);
+        setLoading(false);
         getCurrentLocation();
         // console.log(cheersArray);
       });
@@ -143,8 +145,11 @@ export const CheersMap = ({ navigation }) => {
   );
 
   useEffect(() => {
-    getCheers();
-  }, []);
+    if (!edit) {
+      setLoading(true);
+      getCheers();
+    }
+  }, [edit]);
   useEffect(() => {
     if (markers) {
       setCheersLoading(true);
@@ -252,7 +257,7 @@ const styles = StyleSheet.create({
   },
   hr: {
     marginVertical: 10,
-    borderBottomColor: "black",
+    borderBottomColor: "#D9B08C",
     borderBottomWidth: 1,
     flex: 1,
     width: "95%",

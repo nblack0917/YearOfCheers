@@ -29,7 +29,7 @@ import { Loading } from "../Loading/Loading";
 import { CheersContext } from "../../context/CheersContext";
 
 export const AddEditCheers = ({ navigation }) => {
-  const [ready, setReady] = useState(false);
+  // const [ready, setReady] = useState(false);
   const [uploading, setUploading] = useState(false);
   // const [name, setName] = useState("");
   // const [date, setDate] = useState(null);
@@ -47,8 +47,19 @@ export const AddEditCheers = ({ navigation }) => {
   const [markers, setMarkers] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
-  const { cheers, setCheers, loading, setLoading, resetCheers } =
-    useContext(CheersContext);
+  const {
+    cheers,
+    setCheers,
+    loading,
+    setLoading,
+    resetCheers,
+    ready,
+    setReady,
+    edit,
+    setEdit,
+    editId,
+    setEditId,
+  } = useContext(CheersContext);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -247,11 +258,21 @@ export const AddEditCheers = ({ navigation }) => {
     console.log("uploading cheers");
     if (checkFields()) {
       const cheersRef = firebase.firestore().collection("cheers");
-      await cheersRef
-        .add(cheers)
-        .then(resetCheers())
-        .then(navigation.navigate("Home"))
-        .catch((error) => console.log("Failed to upload", error));
+      if (edit) {
+        await cheersRef
+          .doc(editId)
+          .update(cheers)
+          .then(resetCheers())
+          .then(setEditId(null))
+          .then(setEdit(false))
+          .then(navigation.navigate("Home"));
+      } else {
+        await cheersRef
+          .add(cheers)
+          .then(resetCheers())
+          .then(navigation.navigate("Home"))
+          .catch((error) => console.log("Failed to upload", error));
+      }
     }
   };
 
@@ -259,6 +280,23 @@ export const AddEditCheers = ({ navigation }) => {
     if (!ready) {
       setCheers({ ...cheers, date: new Date() });
       setReady(true);
+    }
+    if (cheers.location) {
+      setMarkers({
+        marker: {
+          latitude: cheers.location.latitude,
+          longitude: cheers.location.longitude,
+        },
+      });
+      setRegion({
+        latitude: cheers.location.latitude,
+        longitude: cheers.location.longitude,
+        latitudeDelta: 0.06,
+        longitudeDelta: 0.06,
+      });
+    }
+    if (cheers.image) {
+      setImage([{ uri: cheers.image }]);
     }
   }, [ready]);
 
@@ -275,7 +313,9 @@ export const AddEditCheers = ({ navigation }) => {
           style={styles.imageContainer}
         >
           <View style={styles.wrapper}>
-            <Text style={styles.mainText}>Add/Edit Cheers Page</Text>
+            <Text style={styles.mainText}>
+              {edit ? "Edit" : "Add New"} Cheers
+            </Text>
             <Text style={styles.subText}>Name:</Text>
             <TextInput
               style={styles.input}

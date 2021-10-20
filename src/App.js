@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { StyleSheet, Text, View, Button, ImageBackground } from "react-native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
@@ -13,9 +13,11 @@ import { AddEditCheers } from "./screens/AddEditCheers/AddEditCheers";
 import { CheersCalendar } from "./screens/Calendar/Calendar";
 import { CheersMap } from "./screens/CheersMap/CheersMap";
 import { CheersDetail } from "./screens/Detail/Detail";
+import { SignIn } from "./screens/SignIn/SignIn";
 import { Loading } from "./screens/Loading/Loading";
 
-import { CheersProvider } from "./context/CheersContext";
+// import { CheersProvider } from "./context/CheersContext";
+import { CheersContext } from "./context/CheersContext";
 
 const Drawer = createDrawerNavigator();
 
@@ -60,34 +62,47 @@ const HomePage = () => {
   );
 };
 
-export default function App() {
-  const [loading, setLoading] = useState(true);
+export default function AppNav() {
+  // const [loading, setLoading] = useState(true);
+
+  const { isSignedIn, setIsSignedIn, loading, setLoading } =
+    useContext(CheersContext);
+
   if (!firebase.apps.length) {
     console.log("Connected with Firebase");
     firebase.initializeApp(apiKeys.firebaseConfig);
     setLoading(false);
   }
-  if (loading) {
-    return <Loading />;
-  } else {
-    return (
-      <CheersProvider>
-        <PaperProvider theme={paperTheme}>
-          <NavigationContainer>
-            <Stack.Navigator>
+  // if (loading) {
+  //   return <Loading />;
+  // } else {
+  return (
+    // <CheersProvider>
+    <PaperProvider theme={paperTheme}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          {isSignedIn ? (
+            <>
               <Stack.Screen
                 name="HomePage"
                 component={HomePage}
                 options={{ headerShown: false }}
               />
               <Stack.Screen name="Cheers Detail" component={CheersDetail} />
-              {/* <Stack.Screen name="Settings" component={Settings} /> */}
-            </Stack.Navigator>
-          </NavigationContainer>
-        </PaperProvider>
-      </CheersProvider>
-    );
-  }
+            </>
+          ) : (
+            <Stack.Screen
+              name="Sign In"
+              component={SignIn}
+              options={{ headerShown: false }}
+            />
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </PaperProvider>
+    // </CheersProvider>
+  );
+  // }
 }
 
 const styles = StyleSheet.create({
