@@ -274,8 +274,8 @@ export const CheersDetail = ({ navigation, cheer }) => {
     setCheers({
       name: cheerDetail.data().name,
       date: cheerDetail.data().date.toDate(),
-      drinkOne: null,
-      drinkTwo: null,
+      drinkOne: cheerDetail.data().drinkOne,
+      drinkTwo: cheerDetail.data().drinkTwo,
       image: cheerDetail.data().image ? cheerDetail.data().image : "",
       location: cheerDetail.data().location,
     });
@@ -354,23 +354,28 @@ export const CheersDetail = ({ navigation, cheer }) => {
               placeholder="Cheers Name"
             /> */}
             {/* <Text style={styles.subText}>Date:</Text> */}
-            {ready && (
-              <View style={styles.dateWrapper}>
-                <Text style={styles.dateText}>
-                  {cheerDetail.data().date.toDate().toDateString()}
-                </Text>
-                <Text style={styles.dateText}>
-                  {formatAMPM(cheerDetail.data().date.toDate())}
-                </Text>
-              </View>
-            )}
-            <View>
-              {/* <Button
-                onPress={showDatepicker}
-                color="#116466"
-                title="Change Date/Time"
-              /> */}
+
+            <View style={styles.dateWrapper}>
+              <Text style={styles.dateText}>
+                {cheerDetail.data().date.toDate().toDateString()}
+              </Text>
+              <Text style={styles.dateText}>
+                {formatAMPM(cheerDetail.data().date.toDate())}
+              </Text>
             </View>
+            {cheerDetail.data().drinkOne && (
+              <>
+                <Text style={styles.mainText}>Cheers with:</Text>
+                <View style={{ flexDirection: "row" }}>
+                  <Text style={styles.dateText}>
+                    {cheerDetail.data().drinkOne}
+                    <Text style={styles.dateText}> and </Text>
+                    {cheerDetail.data().drinkTwo}
+                  </Text>
+                </View>
+              </>
+            )}
+            <View></View>
             {show && (
               <DateTimePicker
                 testID="dateTimePicker"

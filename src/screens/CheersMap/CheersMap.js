@@ -42,6 +42,7 @@ export const CheersMap = ({ navigation }) => {
     cheerDetail,
     setCheerDetail,
     edit,
+    cheersDoc,
   } = useContext(CheersContext);
 
   const mapView = useRef();
@@ -90,7 +91,7 @@ export const CheersMap = ({ navigation }) => {
 
   const getCheers = async () => {
     let cheersArray = [];
-    const cheersRef = await firebase.firestore().collection("cheers");
+    const cheersRef = await firebase.firestore().collection(cheersDoc);
     cheersRef
       .get()
       .then((querySnapshot) => {

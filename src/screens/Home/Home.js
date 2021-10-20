@@ -1,6 +1,13 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Button, ImageBackground } from "react-native";
+import React, { useEffect, useState, useContext } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  ImageBackground,
+  TouchableOpacity,
+} from "react-native";
 import AppLoading from "expo-app-loading";
 import * as firebase from "firebase";
 import "firebase/firestore";
@@ -16,21 +23,30 @@ import {
 // import { set } from "react-native-reanimated";
 
 export const Home = ({ navigation }) => {
-  // const [cheers, setCheers] = useState("");
+  const {
+    isSignedIn,
+    setIsSignedIn,
+    loading,
+    setLoading,
+    isGuest,
+    setIsGuest,
+  } = useContext(CheersContext);
 
-  // const getCheers = () => {
-  //   try {
-  //     const cheersRef = firebase.firestore().collection("cheers");
-  //     cheersRef.get().then((querySnapshot) => {
-  //       // setCheers(querySnapshot.size.toString());
-  //       querySnapshot.forEach((doc) => {
-  //         setCheers(doc.data().name);
-  //       });
-  //     });
-  //   } catch (error) {
-  //     console.log("Error with firestore: ", error);
-  //   }
-  // };
+  const handleSignOut = async () => {
+    await firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        // Signed in
+        setIsGuest(false);
+        setIsSignedIn(false);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
+  };
 
   let [fontsLoaded, error] = useFonts({
     Merienda_400Regular,
@@ -64,6 +80,16 @@ export const Home = ({ navigation }) => {
           {cheers.length > 0 && <Text>{cheers}</Text>} */}
           <StatusBar style="auto" />
         </View>
+        <View style={styles.signOutContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              handleSignOut();
+            }}
+          >
+            <Text style={styles.signOutText}>Sign Out</Text>
+          </TouchableOpacity>
+        </View>
       </ImageBackground>
     </View>
   );
@@ -78,7 +104,7 @@ const styles = StyleSheet.create({
     // backgroundImage: URL("./WineGlasses.jpg"),
   },
   wrapper: {
-    flex: 1,
+    flex: 5,
     // backgroundColor: "#2c3531",
     alignItems: "center",
     justifyContent: "flex-start",
@@ -87,6 +113,7 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     justifyContent: "center",
+    // alignItems: "stretch",
     width: "100%",
     height: "100%",
   },
@@ -103,5 +130,19 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 24,
     fontFamily: "Merienda_400Regular",
+  },
+  signOutContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  signOutText: {
+    color: "#f4f4f4",
+    fontSize: 18,
+  },
+  button: {
+    backgroundColor: "#2c3531",
+    padding: 10,
+    borderRadius: 5,
   },
 });

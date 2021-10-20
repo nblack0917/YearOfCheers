@@ -23,6 +23,8 @@ import { CheersItem } from "./CheersItem";
 
 import { calendarTheme } from "./CalendarTheme";
 
+import { CheersContext } from "../../context/CheersContext";
+
 import {
   useFonts,
   Merienda_400Regular,
@@ -35,6 +37,18 @@ export const CheersCalendar = ({ navigation }) => {
   const [originDates, setOriginDates] = useState({});
   const [markedDates, setMarkedDates] = useState({});
   const [clickedDayEvents, setClickedDayEvents] = useState([]);
+
+  const {
+    cheers,
+    setCheers,
+    loading,
+    setLoading,
+    resetCheers,
+    cheerDetail,
+    setCheerDetail,
+    edit,
+    cheersDoc,
+  } = useContext(CheersContext);
 
   let [fontsLoaded, error] = useFonts({
     Merienda_400Regular,
@@ -63,7 +77,7 @@ export const CheersCalendar = ({ navigation }) => {
     let eventData = [];
     let cheersArray = [];
 
-    const cheersRef = await firebase.firestore().collection("cheers");
+    const cheersRef = await firebase.firestore().collection(cheersDoc);
     cheersRef
       .get()
       .then((querySnapshot) => {

@@ -1,6 +1,13 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useContext } from "react";
-import { StyleSheet, Text, View, Button, ImageBackground } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  ImageBackground,
+  TouchableOpacity,
+} from "react-native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -65,7 +72,7 @@ const HomePage = () => {
 export default function AppNav() {
   // const [loading, setLoading] = useState(true);
 
-  const { isSignedIn, setIsSignedIn, loading, setLoading } =
+  const { isSignedIn, setIsSignedIn, loading, setLoading, isGuest } =
     useContext(CheersContext);
 
   if (!firebase.apps.length) {
@@ -81,7 +88,7 @@ export default function AppNav() {
     <PaperProvider theme={paperTheme}>
       <NavigationContainer>
         <Stack.Navigator>
-          {isSignedIn ? (
+          {isSignedIn || isGuest ? (
             <>
               <Stack.Screen
                 name="HomePage"

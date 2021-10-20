@@ -33,7 +33,7 @@ export const SignIn = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState(null);
 
-  const { isSignedIn, setIsSignedIn, user, setUser } =
+  const { isSignedIn, setIsSignedIn, user, setUser, isGuest, setIsGuest } =
     useContext(CheersContext);
 
   let [fontsLoaded, error] = useFonts({
@@ -65,6 +65,17 @@ export const SignIn = ({ navigation }) => {
     setSigningIn(false);
   };
 
+  const handleGuestSignIn = () => {
+    setTimeout(() => {
+      setVisible(false);
+      setIsGuest(true);
+    }, 1000);
+    setTimeout(() => {
+      setSigningIn(false);
+      //   setIsGuest(true);
+    }, 1500);
+  };
+
   if (!fontsLoaded) {
     return <AppLoading />;
   }
@@ -87,7 +98,14 @@ export const SignIn = ({ navigation }) => {
             >
               <Text style={styles.buttonText}>Sign In</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setSigningIn(true);
+                setVisible(true);
+                handleGuestSignIn();
+              }}
+            >
               <Text style={styles.buttonText}>Continue as Guest</Text>
             </TouchableOpacity>
           </View>

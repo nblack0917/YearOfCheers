@@ -3,6 +3,7 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import MapView, { Marker, ProviderPropType } from "react-native-maps";
 import { Portal, Modal } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
+import { Picker } from "@react-native-picker/picker";
 import ImageView from "react-native-image-viewing";
 import uuid from "react-native-uuid";
 import * as Location from "expo-location";
@@ -31,7 +32,8 @@ import { CheersContext } from "../../context/CheersContext";
 export const AddEditCheers = ({ navigation }) => {
   // const [ready, setReady] = useState(false);
   const [uploading, setUploading] = useState(false);
-  // const [name, setName] = useState("");
+  const [drinkOne, setDrinkOne] = useState();
+  const [drinkTwo, setDrinkTwo] = useState();
   // const [date, setDate] = useState(null);
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
@@ -59,6 +61,8 @@ export const AddEditCheers = ({ navigation }) => {
     setEdit,
     editId,
     setEditId,
+    cheersDoc,
+    // drinkList,
   } = useContext(CheersContext);
 
   const showModal = () => setVisible(true);
@@ -66,6 +70,21 @@ export const AddEditCheers = ({ navigation }) => {
 
   const mapView = useRef();
   const markerView = useRef();
+
+  const drinkList = [
+    "Beer",
+    "White Wine",
+    "Red Wine",
+    "Whiskey",
+    "Scotch",
+    "Margarita",
+    "Sparkling Wine",
+    "Water",
+    "Bloody Mary",
+    "Mimosa",
+    "Soda",
+    "Other",
+  ];
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -232,6 +251,9 @@ export const AddEditCheers = ({ navigation }) => {
   };
 
   const checkFields = () => {
+    if (!cheers.drinkOne || !cheers.drinkTwo) {
+      setCheers({ ...cheers, drinkOne: "Beer", drinkTwo: "Beer" });
+    }
     if (!cheers.name) {
       // Alert("Please add a name for this cheers.");
       Alert.alert(
@@ -257,7 +279,7 @@ export const AddEditCheers = ({ navigation }) => {
   const uploadCheers = async () => {
     console.log("uploading cheers");
     if (checkFields()) {
-      const cheersRef = firebase.firestore().collection("cheers");
+      const cheersRef = firebase.firestore().collection(cheersDoc);
       if (edit) {
         await cheersRef
           .doc(editId)
@@ -298,6 +320,7 @@ export const AddEditCheers = ({ navigation }) => {
     if (cheers.image) {
       setImage([{ uri: cheers.image }]);
     }
+    console.log(drinkList);
   }, [ready]);
 
   // useEffect(() => {
@@ -326,6 +349,48 @@ export const AddEditCheers = ({ navigation }) => {
               value={cheers.name}
               placeholder="Cheers Name"
             />
+            <Text style={styles.subText}>Select Your Drinks:</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                style={styles.picker}
+                // style={{ fontSize: 24 }}
+                selectedValue={cheers.drinkOne}
+                onValueChange={(itemValue, itemIndex) =>
+                  setCheers({ ...cheers, drinkOne: itemValue })
+                }
+              >
+                {drinkList.map((drink) => {
+                  return (
+                    <Picker.Item
+                      label={drink}
+                      value={drink}
+                      key={uuid.v4()}
+                      style={{ fontSize: 24 }}
+                    />
+                  );
+                })}
+                {/* <Picker.Item label="JavaScript" value="js" /> */}
+              </Picker>
+              <Picker
+                style={styles.picker}
+                selectedValue={cheers.drinkTwo}
+                onValueChange={(itemValue, itemIndex) =>
+                  setCheers({ ...cheers, drinkTwo: itemValue })
+                }
+              >
+                {drinkList.map((drink) => {
+                  return (
+                    <Picker.Item
+                      label={drink}
+                      value={drink}
+                      key={uuid.v4()}
+                      style={{ fontSize: 24 }}
+                    />
+                  );
+                })}
+                {/* <Picker.Item label="JavaScript" value="js" /> */}
+              </Picker>
+            </View>
             <Text style={styles.subText}>Date:</Text>
             {ready && (
               <View style={styles.dateWrapper}>
@@ -576,5 +641,19 @@ const styles = StyleSheet.create({
     padding: 15,
     fontSize: 24,
     fontFamily: "Merienda_400Regular",
+  },
+  pickerContainer: {
+    // flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "80%",
+    // height: 24,
+    // marginBottom: 10,
+  },
+  picker: {
+    width: "80%",
+    marginBottom: 25,
+    height: 24,
+    backgroundColor: "#f4f4f4",
   },
 });
