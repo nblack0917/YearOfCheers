@@ -29,6 +29,7 @@ export function DrawerContent(props) {
     setLoading,
     isGuest,
     setIsGuest,
+    numberOfCheers,
   } = useContext(CheersContext);
 
   const handleSignOut = async () => {
@@ -36,7 +37,6 @@ export function DrawerContent(props) {
       .auth()
       .signOut()
       .then(() => {
-        // Signed in
         setIsGuest(false);
         setIsSignedIn(false);
       })
@@ -67,7 +67,7 @@ export function DrawerContent(props) {
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props}>
         <View style={styles.drawerContent}>
-          <View style={styles.userInfoSection}>
+          <View style={styles.cheersDrawerTop}>
             <View
               style={{
                 flexDirection: "row",
@@ -82,7 +82,7 @@ export function DrawerContent(props) {
             <View style={styles.row}>
               <View style={styles.section}>
                 <Paragraph style={[styles.paragraph, styles.caption]}>
-                  80
+                  {numberOfCheers.toString()}
                 </Paragraph>
                 <Caption style={styles.caption}>Cheers</Caption>
               </View>
@@ -92,19 +92,19 @@ export function DrawerContent(props) {
           <Drawer.Section style={styles.drawerSection}>
             <DrawerItem
               icon={({ color, size }) => (
-                <MaterialCommunityIcons
-                  name="home-outline"
-                  color={props.state.index === 0 ? "#D9B08C" : "#f4f4f4"}
-                  size={size}
-                />
+                <View style={{ width: 30, alignItems: "center" }}>
+                  <MaterialCommunityIcons
+                    name="home-outline"
+                    color={props.state.index === 0 ? "#D9B08C" : "#f4f4f4"}
+                    size={size}
+                  />
+                </View>
               )}
               label="Home"
-              activeTintColor="#116466"
               activeBackgroundColor="#116466"
               inactiveBackgroundColor="#414A49"
               style={styles.drawerItem}
               labelStyle={{ color: "#ffffff" }}
-              activeTintColor="#116466"
               focused={props.state.index === 0}
               onPress={() => {
                 props.navigation.navigate("Home");
@@ -112,20 +112,20 @@ export function DrawerContent(props) {
             />
             <DrawerItem
               icon={({ color, size }) => (
-                <FontAwesome5
-                  name="glass-cheers"
-                  color={props.state.index === 1 ? "#D9B08C" : "#f4f4f4"}
-                  size={size}
-                />
+                <View style={{ width: 30, alignItems: "center" }}>
+                  <FontAwesome5
+                    name="glass-cheers"
+                    color={props.state.index === 1 ? "#D9B08C" : "#f4f4f4"}
+                    size={size}
+                  />
+                </View>
               )}
               label="New Cheers"
               style={styles.drawerItem}
-              activeTintColor="#116466"
               activeBackgroundColor="#116466"
               inactiveBackgroundColor="#414A49"
               style={styles.drawerItem}
               labelStyle={{ color: "#ffffff" }}
-              activeTintColor="#116466"
               focused={props.state.index === 1}
               onPress={() => {
                 props.navigation.navigate("New Cheers");
@@ -133,20 +133,20 @@ export function DrawerContent(props) {
             />
             <DrawerItem
               icon={({ color, size }) => (
-                <FontAwesome5
-                  name="calendar-alt"
-                  color={props.state.index === 2 ? "#D9B08C" : "#f4f4f4"}
-                  size={size}
-                />
+                <View style={{ width: 30, alignItems: "center" }}>
+                  <FontAwesome5
+                    name="calendar-alt"
+                    color={props.state.index === 2 ? "#D9B08C" : "#f4f4f4"}
+                    size={size}
+                  />
+                </View>
               )}
               label="Cheers Calendar"
               style={styles.drawerItem}
-              activeTintColor="#116466"
               activeBackgroundColor="#116466"
               inactiveBackgroundColor="#414A49"
               style={styles.drawerItem}
               labelStyle={{ color: "#ffffff" }}
-              activeTintColor="#116466"
               focused={props.state.index === 2}
               onPress={() => {
                 props.navigation.navigate("Calendar");
@@ -154,20 +154,20 @@ export function DrawerContent(props) {
             />
             <DrawerItem
               icon={({ color, size }) => (
-                <FontAwesome5
-                  name="map-marked-alt"
-                  color={props.state.index === 3 ? "#D9B08C" : "#f4f4f4"}
-                  size={size}
-                />
+                <View style={{ width: 30, alignItems: "center" }}>
+                  <FontAwesome5
+                    name="map-marked-alt"
+                    color={props.state.index === 3 ? "#D9B08C" : "#f4f4f4"}
+                    size={size}
+                  />
+                </View>
               )}
               label="Cheers Map"
               style={styles.drawerItem}
-              activeTintColor="#116466"
               activeBackgroundColor="#116466"
               inactiveBackgroundColor="#414A49"
               style={styles.drawerItem}
               labelStyle={{ color: "#ffffff" }}
-              activeTintColor="#116466"
               focused={props.state.index === 3}
               onPress={() => {
                 props.navigation.navigate("Cheers Map");
@@ -175,20 +175,20 @@ export function DrawerContent(props) {
             />
             <DrawerItem
               icon={({ color, size }) => (
-                <FontAwesome5
-                  name="info-circle"
-                  color={props.state.index === 4 ? "#D9B08C" : "#f4f4f4"}
-                  size={size}
-                />
+                <View style={{ width: 30, alignItems: "center" }}>
+                  <FontAwesome5
+                    name="info-circle"
+                    color={props.state.index === 4 ? "#D9B08C" : "#f4f4f4"}
+                    size={size}
+                  />
+                </View>
               )}
               label="About"
               style={styles.drawerItem}
-              activeTintColor="#116466"
               activeBackgroundColor="#116466"
               inactiveBackgroundColor="#414A49"
               style={styles.drawerItem}
               labelStyle={{ color: "#ffffff" }}
-              activeTintColor="#116466"
               focused={props.state.index === 4}
               //   onPress={() => {
               //     props.navigation.navigate("SupportScreen");
@@ -214,11 +214,13 @@ export function DrawerContent(props) {
       <Drawer.Section style={styles.bottomDrawerSection}>
         <DrawerItem
           icon={({ color, size }) => (
-            <MaterialCommunityIcons
-              name="exit-to-app"
-              color={"#f4f4f4"}
-              size={size}
-            />
+            <View style={{ width: 30, alignItems: "center" }}>
+              <MaterialCommunityIcons
+                name="exit-to-app"
+                color={"#f4f4f4"}
+                size={size}
+              />
+            </View>
           )}
           label="Sign Out"
           labelStyle={{ color: "#ffffff" }}
@@ -236,7 +238,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#2c3531",
   },
-  userInfoSection: {
+  cheersDrawerTop: {
     paddingLeft: 35,
   },
   title: {

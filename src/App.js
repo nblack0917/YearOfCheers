@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
+import AppLoading from "expo-app-loading";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator, DrawerItem } from "@react-navigation/drawer";
@@ -31,6 +32,12 @@ import { DrawerContent } from "./components/navigation/DrawerContent";
 // import { CheersProvider } from "./context/CheersContext";
 import { CheersContext } from "./context/CheersContext";
 
+import {
+  useFonts,
+  Merienda_400Regular,
+  Merienda_700Bold,
+} from "@expo-google-fonts/merienda";
+
 const Drawer = createDrawerNavigator();
 
 const Stack = createStackNavigator();
@@ -47,7 +54,7 @@ const paperTheme = {
 };
 
 const NavigationDrawerStructure = ({ navigation }) => {
-  console.log(navigation);
+  // console.log(navigation);
   const toggleDrawer = () => {
     navigation.toggleDrawer();
   };
@@ -56,19 +63,28 @@ const NavigationDrawerStructure = ({ navigation }) => {
     <TouchableOpacity onPress={() => toggleDrawer()}>
       <MaterialCommunityIcons
         name="menu"
-        size={24}
+        size={32}
         color="#f4f4f4"
-        style={{ marginLeft: 15 }}
+        style={{ marginLeft: 15, paddingBottom: 15 }}
       />
     </TouchableOpacity>
   );
 };
 
-const HomePage = ({ navigation }) => {
+const HomePage = () => {
+  let [fontsLoaded, error] = useFonts({
+    Merienda_400Regular,
+    Merienda_700Bold,
+  });
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
   return (
     <Drawer.Navigator
       drawerContent={(props) => <DrawerContent {...props} />}
-      screenOptions={{
+      screenOptions={({ navigation }) => ({
         drawerActiveBackgroundColor: "#116466",
         drawerContentContainerStyle: { backgroundColor: "#333" },
         drawerActiveTintColor: "#f4f4f4",
@@ -80,31 +96,14 @@ const HomePage = ({ navigation }) => {
         },
         drawerItemStyle: { color: "#f4f4f4" },
         headerLeft: () => <NavigationDrawerStructure navigation={navigation} />,
-        headerTitle: "",
+        headerTitle: "Year of Cheers",
+        headerTitleAlign: "center",
         headerShadowVisible: false,
         headerStyle: { backgroundColor: "#2c3531" },
-        headerTitleStyle: { color: "#f4f4f4" },
+        headerTitleStyle: styles.mainText,
         defaultStatus: "open",
-      }}
+      })}
     >
-      {/* <Drawer.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        drawerActiveBackgroundColor: "#116466",
-        drawerContentContainerStyle: { backgroundColor: "#333" },
-        drawerActiveTintColor: "#f4f4f4",
-        drawerInactiveTintColor: "#D1E8E2",
-        drawerInactiveBackgroundColor: "#414A49",
-        drawerStyle: {
-          backgroundColor: "#2c3531",
-          width: "80%",
-        },
-        headerStyle: { backgroundColor: "#414A49" },
-        headerTitleStyle: { color: "#f4f4f4" },
-        defaultStatus: "open",
-      }}
-    >
-    */}
       <Drawer.Screen name="Home" component={Home} />
       <Drawer.Screen name="New Cheers" component={AddEditCheers} />
       <Drawer.Screen name="Calendar" component={CheersCalendar} />
@@ -181,5 +180,10 @@ const styles = StyleSheet.create({
   },
   mainText: {
     textAlign: "center",
+    color: "#f4f4f4",
+    // marginTop: 30,
+    marginBottom: 15,
+    fontSize: 32,
+    fontFamily: "Merienda_400Regular",
   },
 });

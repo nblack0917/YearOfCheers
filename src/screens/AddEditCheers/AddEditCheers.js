@@ -62,7 +62,7 @@ export const AddEditCheers = ({ navigation }) => {
     editId,
     setEditId,
     cheersDoc,
-    // drinkList,
+    getCheersCount,
   } = useContext(CheersContext);
 
   const showModal = () => setVisible(true);
@@ -138,11 +138,10 @@ export const AddEditCheers = ({ navigation }) => {
           // aspect: [4, 3],
           quality: 1,
         });
-        console.log(result);
+        // console.log(result);
         if (!result.cancelled) {
-          console.log(result);
+          // console.log(result);
           setCheers({ ...cheers, image: result.uri });
-          // const fileName = `cheersPhotos/${uuid.v4()}.jpg`;
           uploadFile(result.uri);
           // setVisible(false);
         }
@@ -160,13 +159,11 @@ export const AddEditCheers = ({ navigation }) => {
         let result = await ImagePicker.launchCameraAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
           allowsEditing: true,
-          // aspect: [4, 3],
           quality: 1,
         });
         if (!result.cancelled) {
-          console.log(result);
+          // console.log(result);
           setCheers({ ...cheers, image: result.uri });
-          // const fileName = `cheersPhotos/${uuid.v4()};
           uploadFile(result.uri);
           // setVisible(false);
         }
@@ -182,7 +179,7 @@ export const AddEditCheers = ({ navigation }) => {
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    console.log(location);
+    // console.log(location);
     animateMap({
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
@@ -204,7 +201,7 @@ export const AddEditCheers = ({ navigation }) => {
   };
 
   const animateMap = ({ latitude, longitude }, index) => {
-    console.log("latlng", latitude, longitude);
+    // console.log("latlng", latitude, longitude);
     mapView.current.animateToRegion(
       {
         // Takes a region object as parameter
@@ -215,25 +212,15 @@ export const AddEditCheers = ({ navigation }) => {
       },
       500
     );
-    // console.log("index", index)
-    // let selectedMarker = markerView.current;
-    // selectedMarker.showCallout();
-    // console.log("markerView", selectedMarker)
   };
 
   const uploadFile = async (filePath) => {
-    //console.log('fileName', fileName, filePath);
-    // setIsLoading(true);
-
     const response = await fetch(filePath);
     const blob = await response.blob();
     var ref = firebase.storage().ref("cheersPhotos").child(uuid.v4());
     ref
       .put(blob)
 
-      // const fileRef = firebase.storage().ref(fileName);
-      // fileRef
-      //   .put(filePath)
       .then((snapshot) =>
         ref.getDownloadURL().then((url) => {
           setCheers({ ...cheers, image: url });
@@ -246,7 +233,6 @@ export const AddEditCheers = ({ navigation }) => {
         setVisible(false);
       })
       .catch((e) => console.log({ message: "Failed to uploaded picture", e }));
-    // .finally(() => setIsLoading(false));
     return;
   };
 
@@ -292,6 +278,7 @@ export const AddEditCheers = ({ navigation }) => {
         await cheersRef
           .add(cheers)
           .then(resetCheers())
+          .then(getCheersCount())
           .then(navigation.navigate("Home"))
           .catch((error) => console.log("Failed to upload", error));
       }
@@ -320,7 +307,7 @@ export const AddEditCheers = ({ navigation }) => {
     if (cheers.image) {
       setImage([{ uri: cheers.image }]);
     }
-    console.log(drinkList);
+    // console.log(drinkList);
   }, [ready]);
 
   // useEffect(() => {
@@ -369,7 +356,6 @@ export const AddEditCheers = ({ navigation }) => {
                     />
                   );
                 })}
-                {/* <Picker.Item label="JavaScript" value="js" /> */}
               </Picker>
               <Picker
                 style={styles.picker}
@@ -388,7 +374,6 @@ export const AddEditCheers = ({ navigation }) => {
                     />
                   );
                 })}
-                {/* <Picker.Item label="JavaScript" value="js" /> */}
               </Picker>
             </View>
             <Text style={styles.subText}>Date:</Text>
@@ -463,20 +448,24 @@ export const AddEditCheers = ({ navigation }) => {
               title={cheers.image ? "Replace Image" : "Add an Image"}
               onPress={() => showModal()}
             />
-            <View style={{ height: 100 }} />
+            <View style={{ height: 75 }} />
             <TouchableOpacity
               style={styles.saveButton}
               onPress={() => uploadCheers()}
             >
               <Text style={styles.buttonText}>Save Cheers</Text>
             </TouchableOpacity>
-            {/* <Button
-              style={{ padding: 15 }}
-              color="#116466"
-              title="Save Cheers"
-              onPress={() => uploadCheers()}
-            /> */}
-            <View style={{ height: 100 }} />
+            <TouchableOpacity
+              style={{ marginTop: 15 }}
+              onPress={() => {
+                setMarkers(null);
+                resetCheers();
+              }}
+            >
+              <Text style={styles.subText}>Reset Cheers</Text>
+            </TouchableOpacity>
+
+            <View style={{ height: 40 }} />
 
             <ImageView
               images={image}
@@ -493,12 +482,7 @@ export const AddEditCheers = ({ navigation }) => {
               >
                 {uploading ? (
                   <View>
-                    <Text
-                      style={styles.mainText}
-                      // className="signatureFont"
-                    >
-                      Uploading Image
-                    </Text>
+                    <Text style={styles.mainText}>Uploading Image</Text>
                     <ActivityIndicator size="large" color="#116466" />
                   </View>
                 ) : (
@@ -520,11 +504,6 @@ export const AddEditCheers = ({ navigation }) => {
                 )}
               </Modal>
             </Portal>
-            {/* <Button
-            style={styles.button}
-            onPress={() => navigation.navigate("Home")}
-            title="Go to Home"
-          /> */}
 
             <StatusBar style="auto" />
           </View>

@@ -21,6 +21,7 @@ export const CheersProvider = ({ children }) => {
   const [ready, setReady] = useState(false);
   const [edit, setEdit] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [numberOfCheers, setNumberOfCheers] = useState("--");
   const [cheerDetail, setCheerDetail] = useState(null);
   const [drinkList, setDrinkList] = useState(null);
   const [cheers, setCheers] = useState({
@@ -45,6 +46,21 @@ export const CheersProvider = ({ children }) => {
       setDrinkList(doc.data());
       // console.log(doc.data());
     });
+  };
+
+  const getCheersCount = async () => {
+    let cheersCount = 0;
+    const cheersRef = await firebase.firestore().collection(cheersDoc);
+    cheersRef
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          cheersCount++;
+        });
+      })
+      .then(() => {
+        setNumberOfCheers(cheersCount);
+      });
   };
 
   useEffect(() => {
@@ -81,6 +97,8 @@ export const CheersProvider = ({ children }) => {
     setUser,
     cheersDoc,
     drinkList,
+    numberOfCheers,
+    getCheersCount,
   };
 
   return (

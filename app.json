@@ -5,6 +5,7 @@
     "owner": "nblack0917",
     "version": "1.0.0",
     "orientation": "portrait",
+    "icon": "./src/images/yearOfCheersIcon.png",
     "assetBundlePatterns": [
       "**/*"
     ],

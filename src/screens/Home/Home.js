@@ -32,6 +32,7 @@ export const Home = ({ navigation }) => {
     setLoading,
     isGuest,
     setIsGuest,
+    getCheersCount,
   } = useContext(CheersContext);
 
   const handleSignOut = async () => {
@@ -55,9 +56,9 @@ export const Home = ({ navigation }) => {
     Merienda_700Bold,
   });
 
-  // useEffect(() => {
-  //   getCheers();
-  // }, []);
+  useEffect(() => {
+    getCheersCount();
+  }, []);
 
   if (!fontsLoaded) {
     return <AppLoading />;
@@ -71,7 +72,7 @@ export const Home = ({ navigation }) => {
         style={styles.image}
       >
         <View style={styles.wrapper}>
-          <Text style={styles.mainText}>Year of Cheers</Text>
+          {/* <Text style={styles.mainText}>Year of Cheers</Text> */}
 
           {/* <Button
             style={styles.button}
@@ -87,8 +88,9 @@ export const Home = ({ navigation }) => {
             style={styles.addButton}
             onPress={() => navigation.navigate("New Cheers")}
           >
-            <FontAwesome5 name="glass-cheers" size={24} color="#F4f4f4" />
+            <FontAwesome5 name="glass-cheers" size={18} color="#F4f4f4" />
             <Text style={styles.addNewText}>Add New Cheers</Text>
+            <FontAwesome5 name="glass-cheers" size={18} color="#F4f4f4" />
           </TouchableOpacity>
         </View>
       </ImageBackground>
@@ -119,12 +121,14 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   addButton: {
-    maxWidth: 150,
+    flexDirection: "row",
+    maxWidth: 350,
     marginTop: 15,
     padding: 10,
     borderRadius: 20,
     backgroundColor: "#116466",
     alignItems: "center",
+    justifyContent: "center",
   },
   mainText: {
     textAlign: "center",
@@ -137,8 +141,8 @@ const styles = StyleSheet.create({
   addNewText: {
     textAlign: "center",
     color: "#f4f4f4",
-    // padding: 10,
-    marginTop: 5,
+    paddingHorizontal: 10,
+    // marginTop: 5,
     fontSize: 18,
   },
   signOutContainer: {
