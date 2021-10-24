@@ -2,11 +2,21 @@
   "expo": {
     "name": "YearOfCheers",
     "slug": "YearOfCheers",
+    "owner": "nblack0917",
     "version": "1.0.0",
     "orientation": "portrait",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "description": "A Cheers tracking app",
+    "ios": {
+      "bundleIdentifier": "com.nblack.yearofcheers",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.nblack.yearofcheers",
+      "versionCode": 1
+    }
   },
   "name": "YearOfCheers"
 }

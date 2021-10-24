@@ -11,9 +11,12 @@ import {
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import { createDrawerNavigator, DrawerItem } from "@react-navigation/drawer";
 import * as firebase from "firebase";
 import apiKeys from "./firebase";
+
+import { FontAwesome5 } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { Home } from "./screens/Home/Home";
 import { AddEditCheers } from "./screens/AddEditCheers/AddEditCheers";
@@ -22,6 +25,8 @@ import { CheersMap } from "./screens/CheersMap/CheersMap";
 import { CheersDetail } from "./screens/Detail/Detail";
 import { SignIn } from "./screens/SignIn/SignIn";
 import { Loading } from "./screens/Loading/Loading";
+
+import { DrawerContent } from "./components/navigation/DrawerContent";
 
 // import { CheersProvider } from "./context/CheersContext";
 import { CheersContext } from "./context/CheersContext";
@@ -41,9 +46,48 @@ const paperTheme = {
   },
 };
 
-const HomePage = () => {
+const NavigationDrawerStructure = ({ navigation }) => {
+  console.log(navigation);
+  const toggleDrawer = () => {
+    navigation.toggleDrawer();
+  };
+
+  return (
+    <TouchableOpacity onPress={() => toggleDrawer()}>
+      <MaterialCommunityIcons
+        name="menu"
+        size={24}
+        color="#f4f4f4"
+        style={{ marginLeft: 15 }}
+      />
+    </TouchableOpacity>
+  );
+};
+
+const HomePage = ({ navigation }) => {
   return (
     <Drawer.Navigator
+      drawerContent={(props) => <DrawerContent {...props} />}
+      screenOptions={{
+        drawerActiveBackgroundColor: "#116466",
+        drawerContentContainerStyle: { backgroundColor: "#333" },
+        drawerActiveTintColor: "#f4f4f4",
+        drawerInactiveTintColor: "#D1E8E2",
+        drawerInactiveBackgroundColor: "#414A49",
+        drawerStyle: {
+          backgroundColor: "#2c3531",
+          width: "70%",
+        },
+        drawerItemStyle: { color: "#f4f4f4" },
+        headerLeft: () => <NavigationDrawerStructure navigation={navigation} />,
+        headerTitle: "",
+        headerShadowVisible: false,
+        headerStyle: { backgroundColor: "#2c3531" },
+        headerTitleStyle: { color: "#f4f4f4" },
+        defaultStatus: "open",
+      }}
+    >
+      {/* <Drawer.Navigator
       initialRouteName="Home"
       screenOptions={{
         drawerActiveBackgroundColor: "#116466",
@@ -60,11 +104,11 @@ const HomePage = () => {
         defaultStatus: "open",
       }}
     >
+    */}
       <Drawer.Screen name="Home" component={Home} />
       <Drawer.Screen name="New Cheers" component={AddEditCheers} />
       <Drawer.Screen name="Calendar" component={CheersCalendar} />
       <Drawer.Screen name="Cheers Map" component={CheersMap} />
-      {/* <Drawer.Screen name="Cheers Detail" component={CheersDetail} /> */}
     </Drawer.Navigator>
   );
 };

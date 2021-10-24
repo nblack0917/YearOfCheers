@@ -12,6 +12,8 @@ import AppLoading from "expo-app-loading";
 import * as firebase from "firebase";
 import "firebase/firestore";
 
+import { FontAwesome5 } from "@expo/vector-icons";
+
 import { CheersContext } from "../../context/CheersContext";
 // import { styles } from "../../utils/style";
 
@@ -70,24 +72,23 @@ export const Home = ({ navigation }) => {
       >
         <View style={styles.wrapper}>
           <Text style={styles.mainText}>Year of Cheers</Text>
-          <Button
+
+          {/* <Button
             style={styles.button}
             onPress={() => navigation.navigate("New Cheers")}
             color="#116466"
             title="Add new Cheers"
-          />
-          {/* <Text>asfddsa</Text>
-          {cheers.length > 0 && <Text>{cheers}</Text>} */}
+          /> */}
+
           <StatusBar style="auto" />
         </View>
         <View style={styles.signOutContainer}>
           <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              handleSignOut();
-            }}
+            style={styles.addButton}
+            onPress={() => navigation.navigate("New Cheers")}
           >
-            <Text style={styles.signOutText}>Sign Out</Text>
+            <FontAwesome5 name="glass-cheers" size={24} color="#F4f4f4" />
+            <Text style={styles.addNewText}>Add New Cheers</Text>
           </TouchableOpacity>
         </View>
       </ImageBackground>
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
     // backgroundImage: URL("./WineGlasses.jpg"),
   },
   wrapper: {
-    flex: 5,
+    flex: 3,
     // backgroundColor: "#2c3531",
     alignItems: "center",
     justifyContent: "flex-start",
@@ -117,19 +118,28 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  button: {
-    maxWidth: 100,
+  addButton: {
+    maxWidth: 150,
     marginTop: 15,
     padding: 10,
     borderRadius: 20,
+    backgroundColor: "#116466",
+    alignItems: "center",
   },
   mainText: {
     textAlign: "center",
     color: "#f4f4f4",
-    marginTop: 30,
+    // marginTop: 30,
     marginBottom: 15,
-    fontSize: 24,
+    fontSize: 36,
     fontFamily: "Merienda_400Regular",
+  },
+  addNewText: {
+    textAlign: "center",
+    color: "#f4f4f4",
+    // padding: 10,
+    marginTop: 5,
+    fontSize: 18,
   },
   signOutContainer: {
     flex: 1,
