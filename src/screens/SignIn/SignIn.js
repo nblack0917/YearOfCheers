@@ -165,6 +165,9 @@ export const SignIn = ({ navigation }) => {
                   >
                     <Text style={styles.buttonText}>Sign In</Text>
                   </TouchableOpacity>
+                  <Text style={styles.messageText}>
+                    If you do not have a login, please sign in as a guest.
+                  </Text>
                 </>
               )}
             </Modal>
@@ -215,7 +218,7 @@ const styles = StyleSheet.create({
   },
   button: {
     maxWidth: 250,
-    marginTop: 15,
+    marginTop: 25,
     padding: 10,
     borderRadius: 5,
     backgroundColor: "#116466",
@@ -249,5 +252,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#f4f4f4",
     borderRadius: 10,
     fontSize: 16,
+  },
+  messageText: {
+    color: "#f4f4f4",
+    fontSize: 16,
+    paddingTop: 10,
   },
 });

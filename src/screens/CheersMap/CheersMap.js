@@ -110,20 +110,17 @@ export const CheersMap = ({ navigation }) => {
         getCurrentLocation();
         // console.log(cheersArray);
       });
-    // setMarkers(cheersArray);
     // console.log(markers);
   };
 
   const Item = ({ item, index }) => (
     <View style={styles.hr}>
-      {/* <TouchableOpacity style={styles.listItem}> */}
       <TouchableOpacity
         style={styles.listItem}
         onPress={() => animateMap(item.data().location, index)}
       >
         <View style={styles.listItemRow}>
           <View style={styles.listItemCol}>
-            {/* <Text style={styles.title}>{item.first_name} {item.last_name}</Text> */}
             <Text style={styles.scheduleProblem}>
               {item.data().date.toDate().toDateString()}
             </Text>
