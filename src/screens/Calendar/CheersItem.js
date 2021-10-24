@@ -23,6 +23,11 @@ export const CheersItem = ({ navigation, event, expanded }) => {
 
   const { cheerDetail, setCheerDetail } = useContext(CheersContext);
 
+  const handleDetail = (item) => {
+    setCheerDetail(item);
+    navigation.navigate("Cheers Detail");
+  };
+
   return (
     <>
       <View style={styles.accordionContainer}>
@@ -37,10 +42,7 @@ export const CheersItem = ({ navigation, event, expanded }) => {
             style={{ margin: 20 }}
             title="View Cheers"
             color="#116466"
-            onPress={() => {
-              setCheerDetail(event);
-              navigation.navigate("Cheers Detail");
-            }}
+            onPress={() => handleDetail(event)}
           />
         </View>
       </View>

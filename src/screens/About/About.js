@@ -24,7 +24,7 @@ import {
 } from "@expo-google-fonts/merienda";
 // import { set } from "react-native-reanimated";
 
-export const Home = ({ navigation }) => {
+export const About = ({ navigation }) => {
   const {
     isSignedIn,
     setIsSignedIn,

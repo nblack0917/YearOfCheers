@@ -135,12 +135,6 @@ export const CheersCalendar = ({ navigation }) => {
   useEffect(() => {
     fetchDates();
   }, []);
-  // useEffect(() => {
-  //   if (markedDates !== {}) {
-  //     setCheersLoading(true);
-  //     // console.log("markedDates", markedDates);
-  //   }
-  // }, [markedDates]);
 
   return !cheersLoading ? (
     <Loading />
@@ -171,21 +165,24 @@ export const CheersCalendar = ({ navigation }) => {
             }}
             theme={calendarTheme}
           />
-          {clickedDayEvents.length > 1 &&
-            clickedDayEvents.map((event, index) => (
+          <ScrollView>
+            {clickedDayEvents.length > 1 &&
+              clickedDayEvents.map((event, index) => (
+                <CheersItem
+                  key={Math.random() * 100}
+                  event={event}
+                  expanded={false}
+                  navigation={navigation}
+                />
+              ))}
+            {clickedDayEvents.length === 1 && (
               <CheersItem
-                key={Math.random() * 100}
-                event={event}
-                expanded={false}
+                event={clickedDayEvents[0]}
+                expanded={true}
+                navigation={navigation}
               />
-            ))}
-          {clickedDayEvents.length === 1 && (
-            <CheersItem
-              event={clickedDayEvents[0]}
-              expanded={true}
-              navigation={navigation}
-            />
-          )}
+            )}
+          </ScrollView>
           <StatusBar style="auto" />
         </View>
       </ImageBackground>

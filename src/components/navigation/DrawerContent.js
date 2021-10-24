@@ -54,9 +54,11 @@ export function DrawerContent(props) {
   ];
 
   const pickPhoto = () => {
-    let randomNumber = Math.floor(Math.random() * 3);
+    let randomNumber = () => {
+      return Math.floor(Math.random() * logoArray.length);
+    };
     // console.log(randomNumber);
-    return logoArray[randomNumber];
+    return logoArray[randomNumber()];
   };
 
   //   console.log(pickPhoto());
@@ -190,9 +192,9 @@ export function DrawerContent(props) {
               style={styles.drawerItem}
               labelStyle={{ color: "#ffffff" }}
               focused={props.state.index === 4}
-              //   onPress={() => {
-              //     props.navigation.navigate("SupportScreen");
-              //   }}
+              onPress={() => {
+                props.navigation.navigate("About");
+              }}
             />
           </Drawer.Section>
           {/* <Drawer.Section title="Preferences">

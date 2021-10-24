@@ -25,6 +25,7 @@ import { CheersCalendar } from "./screens/Calendar/Calendar";
 import { CheersMap } from "./screens/CheersMap/CheersMap";
 import { CheersDetail } from "./screens/Detail/Detail";
 import { SignIn } from "./screens/SignIn/SignIn";
+import { About } from "./screens/About/About";
 import { Loading } from "./screens/Loading/Loading";
 
 import { DrawerContent } from "./components/navigation/DrawerContent";
@@ -108,6 +109,7 @@ const HomePage = () => {
       <Drawer.Screen name="New Cheers" component={AddEditCheers} />
       <Drawer.Screen name="Calendar" component={CheersCalendar} />
       <Drawer.Screen name="Cheers Map" component={CheersMap} />
+      <Drawer.Screen name="About" component={About} />
     </Drawer.Navigator>
   );
 };

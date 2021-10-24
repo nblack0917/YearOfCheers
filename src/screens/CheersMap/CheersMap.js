@@ -204,6 +204,10 @@ export const CheersMap = ({ navigation }) => {
               data={markers}
               renderItem={renderItem}
               keyExtractor={(item) => `${item.data().name}`}
+              onRefresh={() => {
+                getCheers();
+              }}
+              refreshing={false}
             />
           </View>
           {/* <Button
