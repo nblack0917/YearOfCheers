@@ -326,7 +326,7 @@ export const AddEditCheers = ({ navigation }) => {
             <Text style={styles.mainText}>
               {edit ? "Edit" : "Add New"} Cheers
             </Text>
-            <Text style={styles.subText}>Name:</Text>
+            <Text style={styles.subText}>Cheers:</Text>
             <TextInput
               style={styles.input}
               onChangeText={(e) => {
@@ -334,9 +334,9 @@ export const AddEditCheers = ({ navigation }) => {
                 // console.log(e);
               }}
               value={cheers.name}
-              placeholder="Cheers Name"
+              placeholder="ex. To good times"
             />
-            <Text style={styles.subText}>Select Your Drinks:</Text>
+            <Text style={styles.subText}>What drinks did you cheers with?</Text>
             <View style={styles.pickerContainer}>
               <Picker
                 style={styles.picker}
@@ -376,7 +376,7 @@ export const AddEditCheers = ({ navigation }) => {
                 })}
               </Picker>
             </View>
-            <Text style={styles.subText}>Date:</Text>
+            {/* <Text style={styles.subText}>Date:</Text> */}
             {ready && (
               <View style={styles.dateWrapper}>
                 <Text style={styles.dateText}>
@@ -391,6 +391,7 @@ export const AddEditCheers = ({ navigation }) => {
                 color="#116466"
                 title="Change Date/Time"
               />
+              <View style={{ height: 50 }}></View>
             </View>
             {show && (
               <DateTimePicker
@@ -402,7 +403,7 @@ export const AddEditCheers = ({ navigation }) => {
                 onChange={onChange}
               />
             )}
-            <Text style={styles.subText}>Location:</Text>
+            {/* <Text style={styles.subText}>Location:</Text> */}
             <MapView
               scrollEnabled={true}
               zoomEnabled={true}
@@ -431,7 +432,8 @@ export const AddEditCheers = ({ navigation }) => {
               title="Use Current location"
               onPress={() => getCurrentLocation()}
             />
-            <Text style={styles.subText}>Photo: (optional)</Text>
+            <View style={{ height: 50 }}></View>
+            {/* <Text style={styles.subText}>Photo: (optional)</Text> */}
             {cheers.image !== null && (
               <TouchableOpacity
                 style={styles.picContainer}
@@ -445,10 +447,10 @@ export const AddEditCheers = ({ navigation }) => {
             )}
             <Button
               color="#116466"
-              title={cheers.image ? "Replace Image" : "Add an Image"}
+              title={cheers.image ? "Replace Image" : "Add an Image (optional)"}
               onPress={() => showModal()}
             />
-            <View style={{ height: 75 }} />
+            <View style={{ height: 50 }} />
             <TouchableOpacity
               style={styles.saveButton}
               onPress={() => uploadCheers()}
@@ -578,7 +580,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    margin: 12,
+    marginBottom: 25,
     borderWidth: 1,
     width: "80%",
     padding: 10,
@@ -626,6 +628,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "80%",
+    marginVertical: 25,
     // height: 24,
     // marginBottom: 10,
   },

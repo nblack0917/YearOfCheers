@@ -165,7 +165,7 @@ export const CheersMap = ({ navigation }) => {
         style={styles.image}
       >
         <View style={styles.wrapper}>
-          <Text style={styles.mainText}>Cheers Map Page</Text>
+          {/* <Text style={styles.mainText}>Cheers Map Page</Text> */}
           <MapView
             scrollEnabled={true}
             zoomEnabled={true}

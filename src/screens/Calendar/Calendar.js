@@ -146,7 +146,7 @@ export const CheersCalendar = ({ navigation }) => {
         style={styles.image}
       >
         <View style={styles.wrapper}>
-          <Text style={styles.mainText}>Calendar Page</Text>
+          {/* <Text style={styles.mainText}>Calendar Page</Text> */}
           <Calendar
             current={new Date()}
             enableSwipeMonths={true}
