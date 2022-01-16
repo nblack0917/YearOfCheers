@@ -31,6 +31,7 @@ export const CheersMap = ({ navigation }) => {
     longitudeDelta: 0.3,
   });
   const [markers, setMarkers] = useState(null);
+  const [allMarkers, setAllMarkers] = useState(null);
   const [cheersLoading, setCheersLoading] = useState(false);
 
   const {
@@ -142,6 +143,15 @@ export const CheersMap = ({ navigation }) => {
     <Item item={item} index={index} mapView={mapView} />
   );
 
+  const fitAllMarkers = () => {
+    const DEFAULT_PADDING = { top: 10, right: 10, bottom: 10, left: 10 };
+
+    mapView.current.fitToCoordinates(allMarkers, {
+      edgePadding: DEFAULT_PADDING,
+      animated: true,
+    });
+  };
+
   useEffect(() => {
     if (!edit) {
       setLoading(true);
@@ -151,9 +161,31 @@ export const CheersMap = ({ navigation }) => {
   useEffect(() => {
     if (markers) {
       setCheersLoading(true);
-      console.log("markers", markers);
+      // console.log("markers", markers);
+      setAllMarkers(
+        markers.map((marker, index) => {
+          // console.log("mark");
+          return {
+            name: marker.data().name,
+            key: marker.data().name + index,
+            latitude: marker.data().location.latitude,
+            longitude: marker.data().location.longitude,
+          };
+        })
+      );
     }
   }, [markers]);
+
+  useEffect(() => {
+    // console.log("MapView", mapView);
+    if (cheersLoading) {
+      if (mapView.current) {
+        setTimeout(() => {
+          fitAllMarkers();
+        }, 250);
+      }
+    }
+  }, [cheersLoading]);
 
   return !cheersLoading ? (
     <Loading />

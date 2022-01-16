@@ -45,6 +45,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       List<ReactPackage> packages = new PackageList(this).getPackages();
       packages.add(new ModuleRegistryAdapter(mModuleRegistryProvider));
+      packages.add(new MainReactPackage());
+      packages.add(new ReactNativeFirebaseAppPackage());
       return packages;
     }
 
@@ -75,13 +77,7 @@ public class MainApplication extends Application implements ReactApplication {
         return UpdatesController.getInstance().getBundleAssetName();
       }
     }
-
-    @Override
-    protected List<ReactPackage> getPackages() {
-      return Arrays.asList(
-        new MainReactPackage(),
-        new ReactNativeFirebaseAppPackage(),
-  }
+  };
 
   @Override
   public ReactNativeHost getReactNativeHost() {
