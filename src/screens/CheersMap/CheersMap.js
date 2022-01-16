@@ -22,6 +22,7 @@ import {
 import { Loading } from "../Loading/Loading";
 
 import { CheersContext } from "../../context/CheersContext";
+import { makeUrl } from "expo-linking";
 
 export const CheersMap = ({ navigation }) => {
   const [region, setRegion] = useState({
@@ -65,6 +66,8 @@ export const CheersMap = ({ navigation }) => {
       },
       500
     );
+    let selectedMarker = markerView.current[index];
+    selectedMarker.showCallout();
   };
 
   const getCurrentLocation = async () => {
@@ -143,6 +146,13 @@ export const CheersMap = ({ navigation }) => {
     <Item item={item} index={index} mapView={mapView} />
   );
 
+  const formateMarkerDate = (date) => {
+    console.log(date);
+    const d = new Date(date);
+    console.log(d);
+    return d.toDateString();
+  };
+
   const fitAllMarkers = () => {
     const DEFAULT_PADDING = { top: 10, right: 10, bottom: 10, left: 10 };
 
@@ -212,7 +222,7 @@ export const CheersMap = ({ navigation }) => {
                 return (
                   <Marker
                     title={marker.data().name}
-                    // description="Clink"
+                    description={marker.data().date.toDate().toDateString()}
                     key={marker.data().name + index}
                     ref={(ref) => markerView.current.push(ref)}
                     coordinate={marker.data().location}

@@ -67,11 +67,11 @@ export const CheersProvider = ({ children }) => {
   const handleToast = () => {
     setTimeout(() => {
       setToast(true);
-      console.log("toast On");
+      // console.log("toast On");
     }, 500);
     setTimeout(() => {
       setToast(false);
-      console.log("toast Off");
+      // console.log("toast Off");
     }, 1000);
   };
 

@@ -92,7 +92,7 @@ export const Home = ({ navigation }) => {
       if (toast) {
         showToast();
       }
-    }, 1000);
+    }, 250);
   }, [toast]);
 
   // useEffect(() => {
