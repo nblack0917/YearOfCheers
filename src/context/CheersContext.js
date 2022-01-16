@@ -19,6 +19,7 @@ export const CheersProvider = ({ children }) => {
   const [cheersDoc, setCheersDoc] = useState("guestCheers");
   const [loading, setLoading] = useState(true);
   const [ready, setReady] = useState(false);
+  const [toast, setToast] = useState(false);
   const [edit, setEdit] = useState(false);
   const [editId, setEditId] = useState(null);
   const [numberOfCheers, setNumberOfCheers] = useState("--");
@@ -63,6 +64,17 @@ export const CheersProvider = ({ children }) => {
       });
   };
 
+  const handleToast = () => {
+    setTimeout(() => {
+      setToast(true);
+      console.log("toast On");
+    }, 500);
+    setTimeout(() => {
+      setToast(false);
+      console.log("toast Off");
+    }, 1000);
+  };
+
   useEffect(() => {
     if (isSignedIn) {
       setCheersDoc("cheers");
@@ -99,6 +111,9 @@ export const CheersProvider = ({ children }) => {
     drinkList,
     numberOfCheers,
     getCheersCount,
+    toast,
+    setToast,
+    handleToast,
   };
 
   return (

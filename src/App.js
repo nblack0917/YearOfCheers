@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -117,14 +117,22 @@ const HomePage = () => {
 export default function AppNav() {
   // const [loading, setLoading] = useState(true);
 
-  const { isSignedIn, setIsSignedIn, loading, setLoading, isGuest } =
-    useContext(CheersContext);
+  const {
+    isSignedIn,
+    setIsSignedIn,
+    loading,
+    setLoading,
+    isGuest,
+    toast,
+    setToast,
+  } = useContext(CheersContext);
 
   if (!firebase.apps.length) {
     console.log("Connected with Firebase");
     firebase.initializeApp(apiKeys.firebaseConfig);
     setLoading(false);
   }
+
   // if (loading) {
   //   return <Loading />;
   // } else {

@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import AppLoading from "expo-app-loading";
+import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import * as firebase from "firebase";
 import "firebase/firestore";
 
@@ -24,6 +25,20 @@ import {
 } from "@expo-google-fonts/merienda";
 // import { set } from "react-native-reanimated";
 
+const toastConfig = {
+  success: (props) => (
+    <BaseToast
+      {...props}
+      style={{ borderLeftColor: "#116466" }}
+      contentContainerStyle={{ paddingHorizontal: 15 }}
+      text1Style={{
+        fontSize: 15,
+        fontWeight: "400",
+      }}
+    />
+  ),
+};
+
 export const Home = ({ navigation }) => {
   const {
     isSignedIn,
@@ -33,7 +48,19 @@ export const Home = ({ navigation }) => {
     isGuest,
     setIsGuest,
     getCheersCount,
+    toast,
+    setToast,
+    handleToast,
   } = useContext(CheersContext);
+
+  const showToast = () => {
+    Toast.show({
+      type: "success",
+      text1: "Cheers saved!",
+      text2: "Here's to the next one!",
+    });
+    setToast(false);
+  };
 
   const handleSignOut = async () => {
     await firebase
@@ -60,6 +87,18 @@ export const Home = ({ navigation }) => {
     getCheersCount();
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      if (toast) {
+        showToast();
+      }
+    }, 1000);
+  }, [toast]);
+
+  // useEffect(() => {
+  //   console.log(toast);
+  // }, []);
+
   if (!fontsLoaded) {
     return <AppLoading />;
   }
@@ -81,17 +120,10 @@ export const Home = ({ navigation }) => {
             <Text style={styles.addNewText}>Add New Cheers</Text>
             <FontAwesome5 name="glass-cheers" size={18} color="#F4f4f4" />
           </TouchableOpacity>
-
-          {/* <Button
-            style={styles.button}
-            onPress={() => navigation.navigate("New Cheers")}
-            color="#116466"
-            title="Add new Cheers"
-          /> */}
-
           <StatusBar style="auto" />
         </View>
         <View style={styles.signOutContainer}></View>
+        <Toast config={toastConfig} />
       </ImageBackground>
     </View>
   );

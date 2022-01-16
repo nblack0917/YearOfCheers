@@ -63,6 +63,8 @@ export const AddEditCheers = ({ navigation }) => {
     setEditId,
     cheersDoc,
     getCheersCount,
+    setToast,
+    handleToast,
   } = useContext(CheersContext);
 
   const showModal = () => setVisible(true);
@@ -134,7 +136,7 @@ export const AddEditCheers = ({ navigation }) => {
       } else {
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
+          allowsEditing: false,
           // aspect: [4, 3],
           quality: 1,
         });
@@ -158,7 +160,7 @@ export const AddEditCheers = ({ navigation }) => {
       } else {
         let result = await ImagePicker.launchCameraAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
+          allowsEditing: false,
           quality: 1,
         });
         if (!result.cancelled) {
@@ -270,6 +272,7 @@ export const AddEditCheers = ({ navigation }) => {
         await cheersRef
           .doc(editId)
           .update(cheers)
+          .then(handleToast())
           .then(resetCheers())
           .then(setEditId(null))
           .then(setEdit(false))
@@ -279,6 +282,7 @@ export const AddEditCheers = ({ navigation }) => {
           .add(cheers)
           .then(resetCheers())
           .then(getCheersCount())
+          .then(handleToast())
           .then(navigation.navigate("Home"))
           .catch((error) => console.log("Failed to upload", error));
       }
@@ -309,10 +313,6 @@ export const AddEditCheers = ({ navigation }) => {
     }
     // console.log(drinkList);
   }, [ready]);
-
-  // useEffect(() => {
-  //   console.log(uuid.v4());
-  // }, []);
 
   return (
     <View style={styles.container}>
