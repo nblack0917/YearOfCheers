@@ -8,6 +8,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Dimensions,
+  LogBox,
 } from "react-native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import AppLoading from "expo-app-loading";
@@ -33,6 +34,8 @@ import { DrawerContent } from "./components/navigation/DrawerContent";
 
 // import { CheersProvider } from "./context/CheersContext";
 import { CheersContext } from "./context/CheersContext";
+
+LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
 
 const { width, height } = Dimensions.get("window");
 
@@ -130,21 +133,13 @@ export default function AppNav() {
     setToast,
   } = useContext(CheersContext);
 
-  useEffect(() => {
-    console.log("width:", width);
-  }, []);
-
   if (!firebase.apps.length) {
     console.log("Connected with Firebase");
     firebase.initializeApp(apiKeys.firebaseConfig);
     setLoading(false);
   }
 
-  // if (loading) {
-  //   return <Loading />;
-  // } else {
   return (
-    // <CheersProvider>
     <PaperProvider theme={paperTheme}>
       <NavigationContainer>
         <Stack.Navigator>
@@ -167,9 +162,7 @@ export default function AppNav() {
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
-    // </CheersProvider>
   );
-  // }
 }
 
 const styles = StyleSheet.create({
