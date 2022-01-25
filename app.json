@@ -9,7 +9,7 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "description": "A Cheers tracking app",
+    "description": "A Cheers tracking app v1.2",
     "ios": {
       "bundleIdentifier": "com.nblack.yearofcheers",
       "buildNumber": "1.0.0"

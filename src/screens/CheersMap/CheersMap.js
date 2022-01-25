@@ -22,6 +22,7 @@ import {
 import { Loading } from "../Loading/Loading";
 
 import { CheersContext } from "../../context/CheersContext";
+import { makeUrl } from "expo-linking";
 
 export const CheersMap = ({ navigation }) => {
   const [region, setRegion] = useState({
@@ -31,6 +32,7 @@ export const CheersMap = ({ navigation }) => {
     longitudeDelta: 0.3,
   });
   const [markers, setMarkers] = useState(null);
+  const [allMarkers, setAllMarkers] = useState(null);
   const [cheersLoading, setCheersLoading] = useState(false);
 
   const {
@@ -64,6 +66,8 @@ export const CheersMap = ({ navigation }) => {
       },
       500
     );
+    let selectedMarker = markerView.current[index];
+    selectedMarker.showCallout();
   };
 
   const getCurrentLocation = async () => {
@@ -142,6 +146,22 @@ export const CheersMap = ({ navigation }) => {
     <Item item={item} index={index} mapView={mapView} />
   );
 
+  const formateMarkerDate = (date) => {
+    console.log(date);
+    const d = new Date(date);
+    console.log(d);
+    return d.toDateString();
+  };
+
+  const fitAllMarkers = () => {
+    const DEFAULT_PADDING = { top: 10, right: 10, bottom: 10, left: 10 };
+
+    mapView.current.fitToCoordinates(allMarkers, {
+      edgePadding: DEFAULT_PADDING,
+      animated: true,
+    });
+  };
+
   useEffect(() => {
     if (!edit) {
       setLoading(true);
@@ -151,9 +171,31 @@ export const CheersMap = ({ navigation }) => {
   useEffect(() => {
     if (markers) {
       setCheersLoading(true);
-      console.log("markers", markers);
+      // console.log("markers", markers);
+      setAllMarkers(
+        markers.map((marker, index) => {
+          // console.log("mark");
+          return {
+            name: marker.data().name,
+            key: marker.data().name + index,
+            latitude: marker.data().location.latitude,
+            longitude: marker.data().location.longitude,
+          };
+        })
+      );
     }
   }, [markers]);
+
+  useEffect(() => {
+    // console.log("MapView", mapView);
+    if (cheersLoading) {
+      if (mapView.current) {
+        setTimeout(() => {
+          fitAllMarkers();
+        }, 250);
+      }
+    }
+  }, [cheersLoading]);
 
   return !cheersLoading ? (
     <Loading />
@@ -180,7 +222,7 @@ export const CheersMap = ({ navigation }) => {
                 return (
                   <Marker
                     title={marker.data().name}
-                    // description="Clink"
+                    description={marker.data().date.toDate().toDateString()}
                     key={marker.data().name + index}
                     ref={(ref) => markerView.current.push(ref)}
                     coordinate={marker.data().location}

@@ -55,4 +55,6 @@ web-build/
 
 src/firebase.js
 
+.env
+
 YearOfCheers.jks

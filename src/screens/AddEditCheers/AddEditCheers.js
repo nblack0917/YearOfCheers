@@ -5,10 +5,15 @@ import { Portal, Modal } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { Picker } from "@react-native-picker/picker";
 import ImageView from "react-native-image-viewing";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import uuid from "react-native-uuid";
 import * as Location from "expo-location";
 import * as firebase from "firebase";
 import "firebase/firestore";
+
+import { GOOGLE_PLACES_API_ANDROID, GOOGLE_PLACES_API_IOS } from "@env";
+
+// const GOOGLE_PLACES_API_ANDROID = "AIzaSyDLpmfVOiiJ_DvntHbTt71wk9ahaMBeqw4";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 import {
@@ -23,9 +28,12 @@ import {
   ActivityIndicator,
   Alert,
   TouchableOpacity,
+  Platform,
+  Content,
 } from "react-native";
 
 import { Loading } from "../Loading/Loading";
+// import { GoogleAutocomplete } from "../../components/GoogleAutocomplete";
 
 import { CheersContext } from "../../context/CheersContext";
 
@@ -63,6 +71,9 @@ export const AddEditCheers = ({ navigation }) => {
     setEditId,
     cheersDoc,
     getCheersCount,
+    setToast,
+    handleToast,
+    drinkList,
   } = useContext(CheersContext);
 
   const showModal = () => setVisible(true);
@@ -70,21 +81,22 @@ export const AddEditCheers = ({ navigation }) => {
 
   const mapView = useRef();
   const markerView = useRef();
+  const placeRef = useRef();
 
-  const drinkList = [
-    "Beer",
-    "White Wine",
-    "Red Wine",
-    "Whiskey",
-    "Scotch",
-    "Margarita",
-    "Sparkling Wine",
-    "Water",
-    "Bloody Mary",
-    "Mimosa",
-    "Soda",
-    "Other",
-  ];
+  // const drinkList = [
+  //   "Beer",
+  //   "White Wine",
+  //   "Red Wine",
+  //   "Whiskey",
+  //   "Scotch",
+  //   "Margarita",
+  //   "Sparkling Wine",
+  //   "Water",
+  //   "Bloody Mary",
+  //   "Mimosa",
+  //   "Soda",
+  //   "Other",
+  // ];
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -134,7 +146,7 @@ export const AddEditCheers = ({ navigation }) => {
       } else {
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
+          allowsEditing: false,
           // aspect: [4, 3],
           quality: 1,
         });
@@ -158,7 +170,7 @@ export const AddEditCheers = ({ navigation }) => {
       } else {
         let result = await ImagePicker.launchCameraAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
+          allowsEditing: false,
           quality: 1,
         });
         if (!result.cancelled) {
@@ -171,30 +183,33 @@ export const AddEditCheers = ({ navigation }) => {
     }
   };
 
-  const getCurrentLocation = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      setErrorMsg("Permission to access location was denied");
-      return;
-    }
+  const getCurrentLocation = async (coords) => {
+    let location;
+    if (!coords) {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
 
-    let location = await Location.getCurrentPositionAsync({});
+      location = await Location.getCurrentPositionAsync({});
+    }
     // console.log(location);
     animateMap({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
+      latitude: coords ? coords.lat : location.coords.latitude,
+      longitude: coords ? coords.lng : location.coords.longitude,
     });
     setMarkers({
       marker: {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
+        latitude: coords ? coords.lat : location.coords.latitude,
+        longitude: coords ? coords.lng : location.coords.longitude,
       },
     });
     setCheers({
       ...cheers,
       location: {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
+        latitude: coords ? coords.lat : location.coords.latitude,
+        longitude: coords ? coords.lng : location.coords.longitude,
       },
     });
     // setMarkerVisible(true);
@@ -270,7 +285,9 @@ export const AddEditCheers = ({ navigation }) => {
         await cheersRef
           .doc(editId)
           .update(cheers)
+          .then(handleToast())
           .then(resetCheers())
+          .then(placeRef.current.clear())
           .then(setEditId(null))
           .then(setEdit(false))
           .then(navigation.navigate("Home"));
@@ -279,6 +296,8 @@ export const AddEditCheers = ({ navigation }) => {
           .add(cheers)
           .then(resetCheers())
           .then(getCheersCount())
+          .then(handleToast())
+          .then(placeRef.current.clear())
           .then(navigation.navigate("Home"))
           .catch((error) => console.log("Failed to upload", error));
       }
@@ -307,16 +326,18 @@ export const AddEditCheers = ({ navigation }) => {
     if (cheers.image) {
       setImage([{ uri: cheers.image }]);
     }
-    // console.log(drinkList);
   }, [ready]);
 
-  // useEffect(() => {
-  //   console.log(uuid.v4());
-  // }, []);
+  useEffect(() => {
+    console.log(GOOGLE_PLACES_API_ANDROID);
+  }, []);
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollContainer}>
+      <ScrollView
+        style={styles.scrollContainer}
+        keyboardShouldPersistTaps="handled"
+      >
         <ImageBackground
           source={require("../../images/WineGlasses_dark.jpg")}
           resizeMode="cover"
@@ -427,10 +448,56 @@ export const AddEditCheers = ({ navigation }) => {
                 />
               )}
             </MapView>
+            <ScrollView
+              horizontal
+              keyboardShouldPersistTaps="handled"
+              contentContainerStyle={{
+                flex: 1,
+                width: "70%",
+                height: "100%",
+                paddingVertical: 25,
+                paddingHorizontal: 40,
+              }}
+            >
+              <GooglePlacesAutocomplete
+                ref={placeRef}
+                placeholder="Enter Location"
+                autoFocus={false}
+                fetchDetails={true}
+                onFail={(error) => console.error(error)}
+                styles={{
+                  container: {
+                    width: "100%",
+                    height: "100%",
+                  },
+                  textInputContainer: {
+                    width: "100%",
+                  },
+                  textInput: {
+                    height: 38,
+                    color: "#5d5d5d",
+                    fontSize: 16,
+                  },
+                }}
+                onPress={(data, details = null) => {
+                  // 'details' is provided when fetchDetails = true
+                  console.log(details.geometry.location);
+                  getCurrentLocation({
+                    lat: details.geometry.location.lat,
+                    lng: details.geometry.location.lng,
+                  });
+                }}
+                query={{
+                  key: GOOGLE_PLACES_API_ANDROID,
+                  language: "en",
+                  // components: "country:us",
+                }}
+              />
+            </ScrollView>
             <Button
               color="#116466"
               title="Use Current location"
-              onPress={() => getCurrentLocation()}
+              onPress={() => getCurrentLocation(null)}
             />
             <View style={{ height: 50 }}></View>
             {/* <Text style={styles.subText}>Photo: (optional)</Text> */}
@@ -461,6 +528,7 @@ export const AddEditCheers = ({ navigation }) => {
               style={{ marginTop: 15 }}
               onPress={() => {
                 setMarkers(null);
+                placeRef.current.clear();
                 resetCheers();
               }}
             >

@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,6 +7,8 @@ import {
   Button,
   ImageBackground,
   TouchableOpacity,
+  Dimensions,
+  LogBox,
 } from "react-native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import AppLoading from "expo-app-loading";
@@ -32,6 +34,10 @@ import { DrawerContent } from "./components/navigation/DrawerContent";
 
 // import { CheersProvider } from "./context/CheersContext";
 import { CheersContext } from "./context/CheersContext";
+
+LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
+
+const { width, height } = Dimensions.get("window");
 
 import {
   useFonts,
@@ -117,19 +123,23 @@ const HomePage = () => {
 export default function AppNav() {
   // const [loading, setLoading] = useState(true);
 
-  const { isSignedIn, setIsSignedIn, loading, setLoading, isGuest } =
-    useContext(CheersContext);
+  const {
+    isSignedIn,
+    setIsSignedIn,
+    loading,
+    setLoading,
+    isGuest,
+    toast,
+    setToast,
+  } = useContext(CheersContext);
 
   if (!firebase.apps.length) {
     console.log("Connected with Firebase");
     firebase.initializeApp(apiKeys.firebaseConfig);
     setLoading(false);
   }
-  // if (loading) {
-  //   return <Loading />;
-  // } else {
+
   return (
-    // <CheersProvider>
     <PaperProvider theme={paperTheme}>
       <NavigationContainer>
         <Stack.Navigator>
@@ -152,9 +162,7 @@ export default function AppNav() {
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
-    // </CheersProvider>
   );
-  // }
 }
 
 const styles = StyleSheet.create({
@@ -185,7 +193,7 @@ const styles = StyleSheet.create({
     color: "#f4f4f4",
     // marginTop: 30,
     marginBottom: 15,
-    fontSize: 32,
+    fontSize: width > 400 ? 32 : 28,
     fontFamily: "Merienda_400Regular",
   },
 });
