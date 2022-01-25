@@ -7,6 +7,7 @@ import {
   Button,
   ImageBackground,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import AppLoading from "expo-app-loading";
@@ -32,6 +33,8 @@ import { DrawerContent } from "./components/navigation/DrawerContent";
 
 // import { CheersProvider } from "./context/CheersContext";
 import { CheersContext } from "./context/CheersContext";
+
+const { width, height } = Dimensions.get("window");
 
 import {
   useFonts,
@@ -127,6 +130,10 @@ export default function AppNav() {
     setToast,
   } = useContext(CheersContext);
 
+  useEffect(() => {
+    console.log("width:", width);
+  }, []);
+
   if (!firebase.apps.length) {
     console.log("Connected with Firebase");
     firebase.initializeApp(apiKeys.firebaseConfig);
@@ -193,7 +200,7 @@ const styles = StyleSheet.create({
     color: "#f4f4f4",
     // marginTop: 30,
     marginBottom: 15,
-    fontSize: 32,
+    fontSize: width > 400 ? 32 : 28,
     fontFamily: "Merienda_400Regular",
   },
 });

@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   Alert,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import { Portal, Modal } from "react-native-paper";
 import AppLoading from "expo-app-loading";
@@ -19,6 +20,8 @@ import * as firebase from "firebase";
 import "firebase/firestore";
 
 import { CheersContext } from "../../context/CheersContext";
+
+const { width, height } = Dimensions.get("window");
 
 import {
   useFonts,
@@ -225,14 +228,14 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#f4f4f4",
-    fontSize: 24,
+    fontSize: width > 400 ? 24 : 20,
   },
   mainText: {
     textAlign: "center",
     color: "#f4f4f4",
     marginTop: 30,
     marginBottom: 15,
-    fontSize: 36,
+    fontSize: width > 400 ? 36 : 28,
     fontFamily: "Merienda_400Regular",
   },
   errorText: {

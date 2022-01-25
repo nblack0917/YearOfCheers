@@ -38,16 +38,16 @@ export const CheersProvider = ({ children }) => {
     setCheers(defaultCheers);
   };
 
-  // const getDrinks = async () => {
-  //   const drinksRef = await firebase
-  //     .firestore()
-  //     .collection("drinks")
-  //     .doc("drinks");
-  //   drinksRef.get().then((doc) => {
-  //     setDrinkList(doc.data());
-  //     // console.log(doc.data());
-  //   });
-  // };
+  const getDrinks = async () => {
+    const drinksRef = await firebase
+      .firestore()
+      .collection("drinks")
+      .doc("drinks");
+    drinksRef.get().then((doc) => {
+      setDrinkList(doc.data().drinks);
+      console.log(doc.data().drinks);
+    });
+  };
 
   const getCheersCount = async () => {
     let cheersCount = 0;
@@ -83,9 +83,9 @@ export const CheersProvider = ({ children }) => {
       setCheersDoc("guestCheers");
     }
   }, [isSignedIn, isGuest]);
-  // useEffect(() => {
-  //   getDrinks();
-  // }, []);
+  useEffect(() => {
+    getDrinks();
+  }, []);
 
   const value = {
     loading,

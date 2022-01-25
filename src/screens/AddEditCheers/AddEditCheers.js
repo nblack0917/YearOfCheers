@@ -11,9 +11,9 @@ import * as Location from "expo-location";
 import * as firebase from "firebase";
 import "firebase/firestore";
 
-// import { GOOGLE_PLACES_API_ANDROID, GOOGLE_PLACES_API_IOS } from "@env";
+import { GOOGLE_PLACES_API_ANDROID, GOOGLE_PLACES_API_IOS } from "@env";
 
-const GOOGLE_PLACES_API_ANDROID = "AIzaSyDLpmfVOiiJ_DvntHbTt71wk9ahaMBeqw4";
+// const GOOGLE_PLACES_API_ANDROID = "AIzaSyDLpmfVOiiJ_DvntHbTt71wk9ahaMBeqw4";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 import {
@@ -73,6 +73,7 @@ export const AddEditCheers = ({ navigation }) => {
     getCheersCount,
     setToast,
     handleToast,
+    drinkList,
   } = useContext(CheersContext);
 
   const showModal = () => setVisible(true);
@@ -82,20 +83,20 @@ export const AddEditCheers = ({ navigation }) => {
   const markerView = useRef();
   const placeRef = useRef();
 
-  const drinkList = [
-    "Beer",
-    "White Wine",
-    "Red Wine",
-    "Whiskey",
-    "Scotch",
-    "Margarita",
-    "Sparkling Wine",
-    "Water",
-    "Bloody Mary",
-    "Mimosa",
-    "Soda",
-    "Other",
-  ];
+  // const drinkList = [
+  //   "Beer",
+  //   "White Wine",
+  //   "Red Wine",
+  //   "Whiskey",
+  //   "Scotch",
+  //   "Margarita",
+  //   "Sparkling Wine",
+  //   "Water",
+  //   "Bloody Mary",
+  //   "Mimosa",
+  //   "Soda",
+  //   "Other",
+  // ];
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
